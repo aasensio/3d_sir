@@ -1,0 +1,3 @@
+include hazel/data/LINEAS
+include src/sir/PARAMETER
+include VERSION.txt
