@@ -12,7 +12,7 @@ import logging
 import h5py
 import scipy.integrate as integ
 
-from ipdb import set_trace as stop
+# from ipdb import set_trace as stop
 
 __all__ = ['Model']
 

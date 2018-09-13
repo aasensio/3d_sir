@@ -1,5 +1,4 @@
 import sir3d
-import numpy as np
 
 #iterator = sir3d.Iterator(use_mpi=False)
 

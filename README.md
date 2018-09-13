@@ -4,6 +4,21 @@
 
 SIR3D is a parallel synthesis code for the synthesis of LTE lines based on SIR.
 
+## Installation
+
+Download the code and type:
+
+
+    python setup.py install
+
+If you want to work on the code it is much comfortable to install a development version
+by typing:
+
+
+    python setup.py develop
+
+You need a working GFortran compiler available.
+
 ## Features
 
 - It uses MPI in a master-agent topology for the fast calculation of Stokes profiles in 3D cubes
@@ -77,3 +92,11 @@ Here is an example of a configuration file, which should be easy to understand.
     Bx = '/scratch1/3dcubes/rempel/spot_32x16x32km_ng/magz.float'
     By = '/scratch1/3dcubes/rempel/spot_32x16x32km_ng/magx.float'
     Bz = '/scratch1/3dcubes/rempel/spot_32x16x32km_ng/magy.float'
+
+## Dependencies
+
+- numpy
+- mpi4py
+- h5py
+- scipy
+- tqdm
