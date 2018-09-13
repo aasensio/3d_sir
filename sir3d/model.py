@@ -102,9 +102,16 @@ class Model(object):
         tmp = config_dict['spectral regions']
 
         # Output file and atmosphere type
-        self.output_file = config_dict['general']['output file']
-        self.atmosphere_type = config_dict['general']['atmosphere type']
+        self.output_file = config_dict['general']['stokes output']
+        self.atmosphere_type = config_dict['atmosphere']['type']
 
+        if (config_dict['general']['interpolated model output'] != 'None'):
+            self.interpolated_model_filename = config_dict['general']['interpolated model output']
+            self.interpolated_tau = np.array([float(i) for i in config_dict['general']['interpolate tau']])
+            self.n_tau = len(self.interpolated_tau)
+        else:
+            self.interpolated_model_filename = None
+        
         # Add spectral regions
         self.init_sir(config_dict['spectral regions'])
         
@@ -132,6 +139,8 @@ class Model(object):
                 self.logger.info(' - Bx file : {0}'.format(self.Bx_file))
                 self.logger.info(' - By file : {0}'.format(self.By_file))
                 self.logger.info(' - Bz file : {0}'.format(self.Bz_file))
+
+                self.maximum_tau = float(config_dict['atmosphere']['maximum tau'])
         
                             
     def init_sir(self, spectral):
@@ -198,7 +207,7 @@ class Model(object):
 
 
 
-    def synth(self, T, P, rho, vz, Bx, By, Bz):
+    def synth(self, T, P, rho, vz, Bx, By, Bz, interpolate_model=False):
 
         # Get ltau500 axis
         log_T = np.log10(T)
@@ -236,15 +245,32 @@ class Model(object):
 
         log_Pe /= ((self.T_eos[it1] - self.T_eos[it0]) * (self.P_eos[ip1] - self.P_eos[ip0]))
 
-        stokes = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[ind], 10**log_Pe[ind], self.zeros[ind], vz[ind], Bx[ind], By[ind], Bz[ind], self.macroturbulence)
+        stokes = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[ind], 10**log_Pe[ind], self.zeros[ind], vz[ind], Bx[ind], By[ind], Bz[ind], self.macroturbulence)        
+
+        # We want to interpolate the model to certain isotau surfaces
+        if (interpolate_model):
+            model = np.zeros((7,self.n_tau))
+
+            model[0,:] = np.interp(self.interpolated_tau, ltau[::-1], self.deltaz[::-1])
+            model[1,:] = np.interp(self.interpolated_tau, ltau[::-1], T[::-1])
+            model[2,:] = np.interp(self.interpolated_tau, ltau[::-1], P[::-1])
+            model[3,:] = np.interp(self.interpolated_tau, ltau[::-1], vz[::-1])
+            model[4,:] = np.interp(self.interpolated_tau, ltau[::-1], Bx[::-1])
+            model[5,:] = np.interp(self.interpolated_tau, ltau[::-1], By[::-1])
+            model[6,:] = np.interp(self.interpolated_tau, ltau[::-1], Bz[::-1])
+
+            return stokes, model
 
         return stokes
 
-    def synth2d(self, T, P, rho, vz, Bx, By, Bz):
+    def synth2d(self, T, P, rho, vz, Bx, By, Bz, interpolate_model=False):
 
         n = T.shape[0]
 
         stokes_out = np.zeros((n,5,self.n_lambda_sir))
+
+        if (interpolate_model):
+            model_out = np.zeros((n,7,self.n_tau))
 
         for loop in range(n):
 
@@ -286,4 +312,18 @@ class Model(object):
 
             stokes_out[loop,:,:] = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[loop,ind], 10**log_Pe[ind], self.zeros[ind], vz[loop,ind], Bx[loop,ind], By[loop,ind], Bz[loop,ind], self.macroturbulence)
 
-        return stokes_out
+            # We want to interpolate the model to certain isotau surfaces
+            if (interpolate_model):
+
+                model_out[loop,0,:] = np.interp(self.interpolated_tau, ltau[::-1], self.deltaz[::-1])
+                model_out[loop,1,:] = np.interp(self.interpolated_tau, ltau[::-1], T[loop,::-1])
+                model_out[loop,2,:] = np.interp(self.interpolated_tau, ltau[::-1], P[loop,::-1])
+                model_out[loop,3,:] = np.interp(self.interpolated_tau, ltau[::-1], vz[loop,::-1])
+                model_out[loop,4,:] = np.interp(self.interpolated_tau, ltau[::-1], Bx[loop,::-1])
+                model_out[loop,5,:] = np.interp(self.interpolated_tau, ltau[::-1], By[loop,::-1])
+                model_out[loop,6,:] = np.interp(self.interpolated_tau, ltau[::-1], Bz[loop,::-1])                
+
+        if (interpolate_model):
+            return stokes_out, model_out
+        else:
+            return stokes_out

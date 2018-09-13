@@ -107,22 +107,40 @@ class Iterator(object):
 
             self.n_pixels = self.model.nx * self.model.nz
 
-        self.f_out = h5py.File(self.model.output_file, 'w')
-        self.stokes_db = self.f_out.create_dataset('stokes', (self.model.nx, self.model.nz, 4, self.model.n_lambda_sir))
-        self.lambda_db = self.f_out.create_dataset('lambda', (self.model.n_lambda_sir,))
+        self.f_stokes_out = h5py.File(self.model.output_file, 'w')
+        self.stokes_db = self.f_stokes_out.create_dataset('stokes', (self.model.nx, self.model.nz, 4, self.model.n_lambda_sir))
+        self.lambda_db = self.f_stokes_out.create_dataset('lambda', (self.model.n_lambda_sir,))
+
+        # If we want to extract a model sampled at selected taus
+        interpolate_model = False
+        if (self.model.interpolated_model_filename is not None):
+            self.f_model_out = h5py.File(self.model.interpolated_model_filename, 'w')
+            self.model_db = self.f_model_out.create_dataset('model', (self.model.nx, self.model.nz, 7, self.model.n_tau))
+            interpolate_model = True
+
         
         for ix in trange(self.model.nx, desc='x'):            
             for iz in trange(self.model.nz, desc='x'):
 
-                stokes = self.model.synth(self.T[ix,:,iz].astype('float64'), self.P[ix,:,iz].astype('float64'), 
-                    self.rho[ix,:,iz].astype('float64'), self.vz[ix,:,iz].astype('float64'), self.Bx[ix,:,iz].astype('float64'), 
-                    self.By[ix,:,iz].astype('float64'), self.Bz[ix,:,iz].astype('float64'))
+                if (interpolate_model):
+                    stokes, model = self.model.synth(self.T[ix,:,iz].astype('float64'), self.P[ix,:,iz].astype('float64'), 
+                        self.rho[ix,:,iz].astype('float64'), self.vz[ix,:,iz].astype('float64'), self.Bx[ix,:,iz].astype('float64'), 
+                        self.By[ix,:,iz].astype('float64'), self.Bz[ix,:,iz].astype('float64'), interpolate_model=interpolate_model)
 
-                self.stokes_db[ix,iz,:,:] = stokes[1:,:]
+                    self.stokes_db[ix,iz,:,:] = stokes[1:,:]
+                    self.model_db[ix,iz,:,:] = model
+
+                else:
+                    stokes = self.model.synth(self.T[ix,:,iz].astype('float64'), self.P[ix,:,iz].astype('float64'), 
+                        self.rho[ix,:,iz].astype('float64'), self.vz[ix,:,iz].astype('float64'), self.Bx[ix,:,iz].astype('float64'), 
+                        self.By[ix,:,iz].astype('float64'), self.Bz[ix,:,iz].astype('float64'), interpolate_model=interpolate_model)
+
+                    self.stokes_db[ix,iz,:,:] = stokes[1:,:]
 
         self.lambda_db[:] = stokes[0,:]
 
-        self.f_out.close()        
+        self.f_stokes_out.close()
+        self.f_model_out.close()
                                             
 
     def mpi_master_work(self, rangex, rangey):
@@ -156,7 +174,7 @@ class Iterator(object):
             if (rangey is not None):
                 y = np.arange(rangey[0], rangey[1])
             else:
-                y = np.arange(self.model.ny)
+                y = np.arange(self.model.nz)
 
             self.n_pixels = len(x) * len(y)
 
@@ -169,9 +187,16 @@ class Iterator(object):
             divX = np.array_split(X, self.n_batches)
             divY = np.array_split(Y, self.n_batches)
 
-        self.f_out = h5py.File(self.model.output_file, 'w')
-        self.stokes_db = self.f_out.create_dataset('stokes', (self.model.nx, self.model.nz, 4, self.model.n_lambda_sir))
-        self.lambda_db = self.f_out.create_dataset('lambda', (self.model.n_lambda_sir,))
+        self.f_stokes_out = h5py.File(self.model.output_file, 'w')
+        self.stokes_db = self.f_stokes_out.create_dataset('stokes', (self.model.nx, self.model.nz, 4, self.model.n_lambda_sir))
+        self.lambda_db = self.f_stokes_out.create_dataset('lambda', (self.model.n_lambda_sir,))
+
+        # If we want to extract a model sampled at selected taus
+        interpolate_model = False
+        if (self.model.interpolated_model_filename is not None):
+            self.f_model_out = h5py.File(self.model.interpolated_model_filename, 'w')
+            self.model_db = self.f_model_out.create_dataset('model', (self.model.nx, self.model.nz, 7, self.model.n_tau))
+            interpolate_model = True
                 
         
         # Loop over all pixels doing the synthesis/inversion and saving the results
@@ -195,7 +220,7 @@ class Iterator(object):
 
                         ix = divX[task_index]
                         iz = divY[task_index]
-                        data_to_send = {'index': task_index, 'indX': ix, 'indY': iz}
+                        data_to_send = {'index': task_index, 'indX': ix, 'indY': iz, 'interpolate': interpolate_model}
                         
                         data_to_send['model'] = [self.T[ix,:,iz].astype('float64'), self.P[ix,:,iz].astype('float64'), 
                             self.rho[ix,:,iz].astype('float64'), self.vz[ix,:,iz].astype('float64'), self.Bx[ix,:,iz].astype('float64'), 
@@ -216,20 +241,24 @@ class Iterator(object):
                     stokes = data_received['stokes']
                     indX = data_received['indX']
                     indY = data_received['indY']
+
+                    if (interpolate_model):
+                        model = data_received['model']
+                        for i in range(len(indX)):
+                            self.model_db[indX[i],indY[i],:,:] = model[i,:,:]
                     
                     for i in range(len(indX)):
                         self.stokes_db[indX[i],indY[i],:,:] = stokes[i,1:,:]
                                                     
                     self.last_received = '{0}->{1}'.format(index, source)
                     pbar.set_postfix(sent=self.last_sent, received=self.last_received)
-                # self.logger.info('Received {0}->{1}'.format(index, source))
 
                 elif tag == tags.EXIT:                    
                     closed_workers += 1
 
-
         self.lambda_db[:] = stokes[0,0,:]
-        self.f_out.close()
+        self.f_stokes_out.close()
+        self.f_model_out.close()
 
     def mpi_agents_work(self):
         """
@@ -254,12 +283,17 @@ class Iterator(object):
                 task_index = data_received['index']
                 indX = data_received['indX']
                 indY = data_received['indY']
+                interpolate_model = data_received['interpolate']
 
                 data_to_send = {'index': task_index, 'indX': indX, 'indY': indY}
 
                 T, P, rho, vz, Bx, By, Bz = data_received['model']
 
-                stokes = self.model.synth2d(T, P, rho, vz, Bx, By, Bz)
+                if (interpolate_model):
+                    stokes, model = self.model.synth2d(T, P, rho, vz, Bx, By, Bz, interpolate_model=interpolate_model)
+                    data_to_send['model'] = model
+                else:
+                    stokes = self.model.synth2d(T, P, rho, vz, Bx, By, Bz, interpolate_model=None)
 
                 data_to_send['stokes'] = stokes
                 
