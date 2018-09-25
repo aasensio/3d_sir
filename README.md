@@ -85,6 +85,8 @@ Here is an example of a configuration file, which should be easy to understand.
     Dimensions = 1536, 128, 1536
     deltaz = 8e5
     Maximum tau = 2.0
+    Delta tau min = 0.1
+    Invert magnetic field = True
     Temperature = '/scratch1/3dcubes/rempel/spot_32x16x32km_ng/temp.float'
     Pressure = '/scratch1/3dcubes/rempel/spot_32x16x32km_ng/pres.float'
     Density = '/scratch1/3dcubes/rempel/spot_32x16x32km_ng/dens.float'

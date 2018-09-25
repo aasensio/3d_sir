@@ -2,12 +2,8 @@ from collections import OrderedDict
 from sir3d import sir_code
 from sir3d.configuration import Configuration
 import numpy as np
-import copy
 import os
-from pathlib import Path
 import scipy.stats
-import scipy.special
-import warnings
 import logging
 import h5py
 import scipy.integrate as integ
@@ -105,10 +101,13 @@ class Model(object):
         self.output_file = config_dict['general']['stokes output']
         self.atmosphere_type = config_dict['atmosphere']['type']
 
+        self.logger.info('Output Stokes file : {0}'.format(self.output_file))
+
         if (config_dict['general']['interpolated model output'] != 'None'):
             self.interpolated_model_filename = config_dict['general']['interpolated model output']
             self.interpolated_tau = np.array([float(i) for i in config_dict['general']['interpolate tau']])
             self.n_tau = len(self.interpolated_tau)
+            self.logger.info('Output model file : {0}'.format(self.interpolated_model_filename))
         else:
             self.interpolated_model_filename = None
         
@@ -118,30 +117,61 @@ class Model(object):
         # Read atmosphere
         if (self.atmosphere_type == 'MURAM'):
             if (self.rank == 0):
+                self.logger.info('Using MURAM atmosphere')
+
                 self.model_shape = tuple([int(k) for k in config_dict['atmosphere']['dimensions']])
                 self.nx, self.ny, self.nz = self.model_shape
                 self.deltaz = float(config_dict['atmosphere']['deltaz']) * np.arange(self.ny)
                 self.T_file = config_dict['atmosphere']['temperature']
+                self.logger.info(' - T file : {0}'.format(self.T_file))
+
                 self.P_file = config_dict['atmosphere']['pressure']
+                self.logger.info(' - P file : {0}'.format(self.P_file))
+
                 self.rho_file = config_dict['atmosphere']['density']
-                self.vz_file = config_dict['atmosphere']['vz']
+                self.logger.info(' - rho file : {0}'.format(self.rho_file))
+
+                if ('vz' in config_dict['atmosphere']):
+                    self.vz_file = config_dict['atmosphere']['vz']
+                    self.vz_type = 'vz'
+                    self.logger.info(' - vz file : {0}'.format(self.vz_file))
+                elif ('rho_vz' in config_dict['atmosphere']):
+                    self.vz_file = config_dict['atmosphere']['rho_vz']
+                    self.vz_type = 'rho_vz'
+                    self.logger.info(' - rho_vz file : {0}'.format(self.vz_file))
+                else:
+                    raise Exception("You need to provide either vz or rho_vz")
+
                 self.Bx_file = config_dict['atmosphere']['bx']
                 self.By_file = config_dict['atmosphere']['by']
                 self.Bz_file = config_dict['atmosphere']['bz']
-
-                self.zeros = np.zeros(self.ny)
-
-                self.logger.info('Using MURAM atmosphere')
-                self.logger.info(' - T file : {0}'.format(self.T_file))
-                self.logger.info(' - P file : {0}'.format(self.P_file))
-                self.logger.info(' - rho file : {0}'.format(self.rho_file))
-                self.logger.info(' - vz file : {0}'.format(self.vz_file))
                 self.logger.info(' - Bx file : {0}'.format(self.Bx_file))
                 self.logger.info(' - By file : {0}'.format(self.By_file))
                 self.logger.info(' - Bz file : {0}'.format(self.Bz_file))
 
+
+                self.zeros = np.zeros(self.ny)                                            
+
                 self.maximum_tau = float(config_dict['atmosphere']['maximum tau'])
-        
+
+                self.bx_multiplier = 1.0
+                self.by_multiplier = 1.0
+                self.bz_multiplier = 1.0
+
+                if ('multipliers' in config_dict['atmosphere']):
+
+                    if ('bx' in config_dict['atmosphere']['multipliers']):
+                        self.bx_multiplier = float(config_dict['atmosphere']['multipliers']['bx'])
+                        self.logger.info('Bx multiplier : {0}'.format(self.bx_multiplier))
+
+                    if ('by' in config_dict['atmosphere']['multipliers']):
+                        self.by_multiplier = float(config_dict['atmosphere']['multipliers']['by'])
+                        self.logger.info('By multiplier : {0}'.format(self.by_multiplier))
+
+                    if ('bz' in config_dict['atmosphere']['multipliers']):
+                        self.bz_multiplier = float(config_dict['atmosphere']['multipliers']['bz'])
+                        self.logger.info('Bz multiplier : {0}'.format(self.bz_multiplier))
+
                             
     def init_sir(self, spectral):
         """
@@ -205,8 +235,6 @@ class Model(object):
         filename = os.path.join(os.path.dirname(__file__),'data/LINEAS')
         self.n_lambda_sir = sir_code.init(1, filename)
 
-
-
     def synth(self, T, P, rho, vz, Bx, By, Bz, interpolate_model=False):
 
         # Get ltau500 axis
@@ -245,7 +273,8 @@ class Model(object):
 
         log_Pe /= ((self.T_eos[it1] - self.T_eos[it0]) * (self.P_eos[ip1] - self.P_eos[ip0]))
 
-        stokes = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[ind], 10**log_Pe[ind], self.zeros[ind], vz[ind], Bx[ind], By[ind], Bz[ind], self.macroturbulence)        
+        stokes = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[ind], 10**log_Pe[ind], self.zeros[ind], vz[ind], 
+            self.bx_multiplier*Bx[ind], self.by_multiplier*By[ind], self.bz_multiplier*Bz[ind], self.macroturbulence)        
 
         # We want to interpolate the model to certain isotau surfaces
         if (interpolate_model):
@@ -255,9 +284,9 @@ class Model(object):
             model[1,:] = np.interp(self.interpolated_tau, ltau[::-1], T[::-1])
             model[2,:] = np.interp(self.interpolated_tau, ltau[::-1], P[::-1])
             model[3,:] = np.interp(self.interpolated_tau, ltau[::-1], vz[::-1])
-            model[4,:] = np.interp(self.interpolated_tau, ltau[::-1], Bx[::-1])
-            model[5,:] = np.interp(self.interpolated_tau, ltau[::-1], By[::-1])
-            model[6,:] = np.interp(self.interpolated_tau, ltau[::-1], Bz[::-1])
+            model[4,:] = np.interp(self.interpolated_tau, ltau[::-1], self.bx_multiplier * Bx[::-1])
+            model[5,:] = np.interp(self.interpolated_tau, ltau[::-1], self.by_multiplier * By[::-1])
+            model[6,:] = np.interp(self.interpolated_tau, ltau[::-1], self.bz_multiplier * Bz[::-1])
 
             return stokes, model
 
@@ -310,7 +339,8 @@ class Model(object):
 
             log_Pe /= ((self.T_eos[it1] - self.T_eos[it0]) * (self.P_eos[ip1] - self.P_eos[ip0]))
 
-            stokes_out[loop,:,:] = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[loop,ind], 10**log_Pe[ind], self.zeros[ind], vz[loop,ind], Bx[loop,ind], By[loop,ind], Bz[loop,ind], self.macroturbulence)
+            stokes_out[loop,:,:] = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[loop,ind], 10**log_Pe[ind], self.zeros[ind], 
+                vz[loop,ind], self.bx_multiplier*Bx[loop,ind], self.by_multiplier*By[loop,ind], self.bz_multiplier*Bz[loop,ind], self.macroturbulence)
 
             # We want to interpolate the model to certain isotau surfaces
             if (interpolate_model):
@@ -319,9 +349,9 @@ class Model(object):
                 model_out[loop,1,:] = np.interp(self.interpolated_tau, ltau[::-1], T[loop,::-1])
                 model_out[loop,2,:] = np.interp(self.interpolated_tau, ltau[::-1], P[loop,::-1])
                 model_out[loop,3,:] = np.interp(self.interpolated_tau, ltau[::-1], vz[loop,::-1])
-                model_out[loop,4,:] = np.interp(self.interpolated_tau, ltau[::-1], Bx[loop,::-1])
-                model_out[loop,5,:] = np.interp(self.interpolated_tau, ltau[::-1], By[loop,::-1])
-                model_out[loop,6,:] = np.interp(self.interpolated_tau, ltau[::-1], Bz[loop,::-1])                
+                model_out[loop,4,:] = np.interp(self.interpolated_tau, ltau[::-1], self.bx_multiplier * Bx[loop,::-1])
+                model_out[loop,5,:] = np.interp(self.interpolated_tau, ltau[::-1], self.by_multiplier * By[loop,::-1])
+                model_out[loop,6,:] = np.interp(self.interpolated_tau, ltau[::-1], self.bz_multiplier * Bz[loop,::-1])
 
         if (interpolate_model):
             return stokes_out, model_out

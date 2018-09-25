@@ -2,6 +2,5 @@ __version__ = "2018.09.13"
 __author__ = "Andres Asensio Ramos"
 
 from . import sir_code
-from .model import *
 from .configuration import *
-from .multiprocessing import *
+from .psf import *
