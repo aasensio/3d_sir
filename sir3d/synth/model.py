@@ -38,35 +38,57 @@ class Model(object):
 
         if (self.rank == 0):
 
-            self.logger.info('Reading EOS')
+            if (self.eos_type == 'MANCHA'):            
 
-            filename = os.path.join(os.path.dirname(__file__), 'data/eos.h5')
-            f = h5py.File(filename, 'r')
-            self.T_eos = np.log10(f['T'][:])
-            self.P_eos = np.log10(f['P'][:])
-            self.Pe_eos = np.log10(f['Pel'][:])
-            f.close()
-            
-            self.logger.info('Reading kappa5000')
-            self.T_kappa5 = np.array([3.32, 3.34, 3.36, 3.38, 3.40, 3.42, 3.44, 3.46, 3.48, 3.50, 
-                3.52, 3.54, 3.56, 3.58, 3.60, 3.62, 3.64, 3.66, 3.68, 3.70, 
-                3.73, 3.76, 3.79, 3.82, 3.85, 3.88, 3.91, 3.94, 3.97, 4.00, 
-                4.05, 4.10, 4.15, 4.20, 4.25, 4.30, 4.35, 4.40, 4.45, 4.50, 
-                4.55, 4.60, 4.65, 4.70, 4.75, 4.80, 4.85, 4.90, 4.95, 5.00, 
-                5.05, 5.10, 5.15, 5.20, 5.25, 5.30 ])
+                self.logger.info('Reading EOS - MANCHA')
 
-            self.P_kappa5 = np.array([-2., -1.5, -1., -.5, 0., .5, 1., 1.5, 2., 2.5, 3., 3.5, 4., 4.5, 5., 5.5, 6. ,6.5, 7., 7.5, 8. ])
+                filename = os.path.join(os.path.dirname(__file__), 'data/eos.h5')
+                f = h5py.File(filename, 'r')
+                self.T_eos = np.log10(f['T'][:])
+                self.P_eos = np.log10(f['P'][:])
+                self.Pe_eos = np.log10(f['Pel'][:])
+                f.close()
+                
+                self.logger.info('Reading kappa5000 - MANCHA')
+                self.T_kappa5 = np.array([3.32, 3.34, 3.36, 3.38, 3.40, 3.42, 3.44, 3.46, 3.48, 3.50, 
+                    3.52, 3.54, 3.56, 3.58, 3.60, 3.62, 3.64, 3.66, 3.68, 3.70, 
+                    3.73, 3.76, 3.79, 3.82, 3.85, 3.88, 3.91, 3.94, 3.97, 4.00, 
+                    4.05, 4.10, 4.15, 4.20, 4.25, 4.30, 4.35, 4.40, 4.45, 4.50, 
+                    4.55, 4.60, 4.65, 4.70, 4.75, 4.80, 4.85, 4.90, 4.95, 5.00, 
+                    5.05, 5.10, 5.15, 5.20, 5.25, 5.30 ])
 
-            self.kappa = np.zeros((56,21))
+                self.P_kappa5 = np.array([-2., -1.5, -1., -.5, 0., .5, 1., 1.5, 2., 2.5, 3., 3.5, 4., 4.5, 5., 5.5, 6. ,6.5, 7., 7.5, 8. ])
 
-            filename = os.path.join(os.path.dirname(__file__), 'data/kappa.5000.dat')
-            f = open(filename, 'r')
-                    
-            for it in range(56):
-                for ip in range(21):
-                    self.kappa[it,ip] = float(f.readline().split()[-1])
+                self.kappa = np.zeros((56,21))
 
-            f.close()
+                filename = os.path.join(os.path.dirname(__file__), 'data/kappa.5000.dat')
+                f = open(filename, 'r')
+                        
+                for it in range(56):
+                    for ip in range(21):
+                        self.kappa[it,ip] = float(f.readline().split()[-1])
+
+                f.close()
+
+            else:
+
+                self.logger.info('Reading EOS - SIR')
+
+                filename = os.path.join(os.path.dirname(__file__), 'data/eos_witt.h5')
+                f = h5py.File(filename, 'r')
+                self.T_eos = np.log10(f['T'][:])
+                self.P_eos = np.log10(f['P'][:])
+                self.Pe_eos = np.log10(f['Pel'][:])
+                f.close()
+                
+                self.logger.info('Reading kappa5000 - SIR')
+                
+                filename = os.path.join(os.path.dirname(__file__), 'data/lambda5000_witt.h5')
+                f = h5py.File(filename, 'r')
+                self.T_kappa5 = np.log10(f['T'][:])
+                self.P_kappa5 = np.log10(f['P'][:])
+                self.kappa = f['kappa5000'][:]
+                f.close()
 
         
     def __getstate__(self):
@@ -100,6 +122,7 @@ class Model(object):
         # Output file and atmosphere type
         self.output_file = config_dict['general']['stokes output']
         self.atmosphere_type = config_dict['atmosphere']['type']
+        self.eos_type = config_dict['general']['eos']
 
         self.logger.info('Output Stokes file : {0}'.format(self.output_file))
 
@@ -253,7 +276,10 @@ class Model(object):
 
         kappa /= ((self.T_kappa5[it1] - self.T_kappa5[it0]) * (self.P_kappa5[ip1] - self.P_kappa5[ip0]))
 
-        chi = (kappa * rho)[::-1]
+        if (self.eos_type == 'MANCHA'):
+             chi = (kappa * rho)[::-1]
+        else:
+             chi = kappa[::-1]
 
         tau = integ.cumtrapz(chi,x=self.deltaz)
         ltau = np.log10(np.insert(tau, 0, 0.5*tau[0]))[::-1]
@@ -319,8 +345,11 @@ class Model(object):
 
             kappa /= ((self.T_kappa5[it1] - self.T_kappa5[it0]) * (self.P_kappa5[ip1] - self.P_kappa5[ip0]))
 
-            chi = (kappa * rho[loop,:])[::-1]
-
+            if (self.eos_type == 'MANCHA'):
+                chi = (kappa * rho[loop,:])[::-1]
+            else:
+                chi = kappa[::-1]
+             
             tau = integ.cumtrapz(chi, x=self.deltaz)
             ltau = np.log10(np.insert(tau, 0, 0.5*tau[0]))[::-1]
 

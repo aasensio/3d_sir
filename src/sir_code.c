@@ -518,8 +518,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__hazel__codes__sir_code
-#define __PYX_HAVE_API__hazel__codes__sir_code
+#define __PYX_HAVE__sir3d__sir_code
+#define __PYX_HAVE_API__sir3d__sir_code
 #include <string.h>
 #include <stdio.h>
 #include "numpy/arrayobject.h"
@@ -749,7 +749,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "src/sir/sir_code.pyx",
+  "src/sir_code.pyx",
   "__init__.pxd",
   "type.pxd",
 };
@@ -1550,17 +1550,17 @@ static PyTypeObject *__pyx_ptype_5numpy_ndarray = 0;
 static PyTypeObject *__pyx_ptype_5numpy_ufunc = 0;
 static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *, char *, char *, int *); /*proto*/
 
-/* Module declarations from 'hazel.codes.sir_code' */
+/* Module declarations from 'sir3d.sir_code' */
 __PYX_EXTERN_C DL_IMPORT(void) c_init(int *, int *, char *, int *); /*proto*/
 __PYX_EXTERN_C DL_IMPORT(void) c_setpsf(int *, float *, float *); /*proto*/
 __PYX_EXTERN_C DL_IMPORT(void) c_synthrf(int *, int *, int *, float *, float *, float *, float *, float *, float *, float *, float *, float *, float *, float *); /*proto*/
 __PYX_EXTERN_C DL_IMPORT(void) c_synth(int *, int *, int *, double *, double *, double *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_float = { "float", NULL, sizeof(float), { 0 }, 0, 'R', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
-#define __Pyx_MODULE_NAME "hazel.codes.sir_code"
-int __pyx_module_is_main_hazel__codes__sir_code = 0;
+#define __Pyx_MODULE_NAME "sir3d.sir_code"
+int __pyx_module_is_main_sir3d__sir_code = 0;
 
-/* Implementation of 'hazel.codes.sir_code' */
+/* Implementation of 'sir3d.sir_code' */
 static PyObject *__pyx_builtin_ValueError;
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_RuntimeError;
@@ -1617,11 +1617,11 @@ static const char __pyx_k_file_lines[] = "file_lines";
 static const char __pyx_k_nLambdaPSF[] = "nLambdaPSF";
 static const char __pyx_k_ImportError[] = "ImportError";
 static const char __pyx_k_RuntimeError[] = "RuntimeError";
+static const char __pyx_k_sir3d_sir_code[] = "sir3d.sir_code";
 static const char __pyx_k_macroturbulence[] = "macroturbulence";
+static const char __pyx_k_src_sir_code_pyx[] = "src/sir_code.pyx";
 static const char __pyx_k_ascontiguousarray[] = "ascontiguousarray";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
-static const char __pyx_k_hazel_codes_sir_code[] = "hazel.codes.sir_code";
-static const char __pyx_k_src_sir_sir_code_pyx[] = "src/sir/sir_code.pyx";
 static const char __pyx_k_ndarray_is_not_C_contiguous[] = "ndarray is not C contiguous";
 static const char __pyx_k_numpy_core_multiarray_failed_to[] = "numpy.core.multiarray failed to import";
 static const char __pyx_k_unknown_dtype_code_in_numpy_pxd[] = "unknown dtype code in numpy.pxd (%d)";
@@ -1654,7 +1654,6 @@ static PyObject *__pyx_n_s_file;
 static PyObject *__pyx_n_s_file_lines;
 static PyObject *__pyx_n_s_float32;
 static PyObject *__pyx_n_s_ftmp;
-static PyObject *__pyx_n_s_hazel_codes_sir_code;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_index;
 static PyObject *__pyx_n_s_init;
@@ -1684,8 +1683,9 @@ static PyObject *__pyx_n_s_rp;
 static PyObject *__pyx_n_s_rt;
 static PyObject *__pyx_n_s_rv;
 static PyObject *__pyx_n_s_setPSF;
+static PyObject *__pyx_n_s_sir3d_sir_code;
 static PyObject *__pyx_n_s_sqrt;
-static PyObject *__pyx_kp_s_src_sir_sir_code_pyx;
+static PyObject *__pyx_kp_s_src_sir_code_pyx;
 static PyObject *__pyx_n_s_stokes;
 static PyObject *__pyx_n_s_synth;
 static PyObject *__pyx_n_s_synthRF;
@@ -1695,10 +1695,10 @@ static PyObject *__pyx_n_s_vlos;
 static PyObject *__pyx_n_s_vmic;
 static PyObject *__pyx_n_s_xPSF;
 static PyObject *__pyx_n_s_yPSF;
-static PyObject *__pyx_pf_5hazel_5codes_8sir_code_init(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_index, PyObject *__pyx_v_file); /* proto */
-static PyObject *__pyx_pf_5hazel_5codes_8sir_code_2setPSF(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_xPSF, PyArrayObject *__pyx_v_yPSF); /* proto */
-static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_index, int __pyx_v_nLambda, PyArrayObject *__pyx_v_log_tau, PyArrayObject *__pyx_v_T, PyArrayObject *__pyx_v_Pe, PyArrayObject *__pyx_v_vmic, PyArrayObject *__pyx_v_vlos, PyArrayObject *__pyx_v_Bx, PyArrayObject *__pyx_v_By, PyArrayObject *__pyx_v_Bz, double __pyx_v_macroturbulence); /* proto */
-static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_index, int __pyx_v_nLambda, PyArrayObject *__pyx_v_log_tau, PyArrayObject *__pyx_v_T, PyArrayObject *__pyx_v_Pe, PyArrayObject *__pyx_v_vmic, PyArrayObject *__pyx_v_vlos, PyArrayObject *__pyx_v_Bx, PyArrayObject *__pyx_v_By, PyArrayObject *__pyx_v_Bz, float __pyx_v_macroturbulence); /* proto */
+static PyObject *__pyx_pf_5sir3d_8sir_code_init(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_index, PyObject *__pyx_v_file); /* proto */
+static PyObject *__pyx_pf_5sir3d_8sir_code_2setPSF(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_xPSF, PyArrayObject *__pyx_v_yPSF); /* proto */
+static PyObject *__pyx_pf_5sir3d_8sir_code_4synth(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_index, int __pyx_v_nLambda, PyArrayObject *__pyx_v_log_tau, PyArrayObject *__pyx_v_T, PyArrayObject *__pyx_v_Pe, PyArrayObject *__pyx_v_vmic, PyArrayObject *__pyx_v_vlos, PyArrayObject *__pyx_v_Bx, PyArrayObject *__pyx_v_By, PyArrayObject *__pyx_v_Bz, double __pyx_v_macroturbulence); /* proto */
+static PyObject *__pyx_pf_5sir3d_8sir_code_6synthRF(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_index, int __pyx_v_nLambda, PyArrayObject *__pyx_v_log_tau, PyArrayObject *__pyx_v_T, PyArrayObject *__pyx_v_Pe, PyArrayObject *__pyx_v_vmic, PyArrayObject *__pyx_v_vlos, PyArrayObject *__pyx_v_Bx, PyArrayObject *__pyx_v_By, PyArrayObject *__pyx_v_Bz, float __pyx_v_macroturbulence); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static PyObject *__pyx_float_1eneg_8;
@@ -1767,7 +1767,7 @@ static PyObject *__pyx_codeobj__50;
 static PyObject *__pyx_codeobj__52;
 static PyObject *__pyx_codeobj__54;
 
-/* "src/sir/sir_code.pyx":12
+/* "src/sir_code.pyx":12
  * 	void c_synth(int *index, int *nDepth, int *nLambda, double *macroturbulence, double *model, double *stokes)
  * 
  * def init(int index, str file):             # <<<<<<<<<<<<<<
@@ -1776,9 +1776,9 @@ static PyObject *__pyx_codeobj__54;
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5hazel_5codes_8sir_code_1init(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_5hazel_5codes_8sir_code_1init = {"init", (PyCFunction)__pyx_pw_5hazel_5codes_8sir_code_1init, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5hazel_5codes_8sir_code_1init(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5sir3d_8sir_code_1init(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_5sir3d_8sir_code_1init = {"init", (PyCFunction)__pyx_pw_5sir3d_8sir_code_1init, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_5sir3d_8sir_code_1init(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   int __pyx_v_index;
   PyObject *__pyx_v_file = 0;
   PyObject *__pyx_r = 0;
@@ -1826,12 +1826,12 @@ static PyObject *__pyx_pw_5hazel_5codes_8sir_code_1init(PyObject *__pyx_self, Py
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("init", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 12, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("hazel.codes.sir_code.init", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("sir3d.sir_code.init", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_file), (&PyString_Type), 1, "file", 1))) __PYX_ERR(0, 12, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5hazel_5codes_8sir_code_init(__pyx_self, __pyx_v_index, __pyx_v_file);
+  __pyx_r = __pyx_pf_5sir3d_8sir_code_init(__pyx_self, __pyx_v_index, __pyx_v_file);
 
   /* function exit code */
   goto __pyx_L0;
@@ -1842,7 +1842,7 @@ static PyObject *__pyx_pw_5hazel_5codes_8sir_code_1init(PyObject *__pyx_self, Py
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5hazel_5codes_8sir_code_init(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_index, PyObject *__pyx_v_file) {
+static PyObject *__pyx_pf_5sir3d_8sir_code_init(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_index, PyObject *__pyx_v_file) {
   int __pyx_v_nLambda;
   PyObject *__pyx_v_ftmp = 0;
   char *__pyx_v_file_lines;
@@ -1855,7 +1855,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_init(CYTHON_UNUSED PyObject *_
   Py_ssize_t __pyx_t_4;
   __Pyx_RefNannySetupContext("init", 0);
 
-  /* "src/sir/sir_code.pyx":15
+  /* "src/sir_code.pyx":15
  * 	cdef:
  * 		int nLambda
  * 		ftmp = file.encode('UTF-8')             # <<<<<<<<<<<<<<
@@ -1870,7 +1870,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_init(CYTHON_UNUSED PyObject *_
   __pyx_v_ftmp = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "src/sir/sir_code.pyx":16
+  /* "src/sir_code.pyx":16
  * 		int nLambda
  * 		ftmp = file.encode('UTF-8')
  * 		cdef char* file_lines = ftmp             # <<<<<<<<<<<<<<
@@ -1880,7 +1880,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_init(CYTHON_UNUSED PyObject *_
   __pyx_t_3 = __Pyx_PyObject_AsWritableString(__pyx_v_ftmp); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(0, 16, __pyx_L1_error)
   __pyx_v_file_lines = __pyx_t_3;
 
-  /* "src/sir/sir_code.pyx":17
+  /* "src/sir_code.pyx":17
  * 		ftmp = file.encode('UTF-8')
  * 		cdef char* file_lines = ftmp
  * 		cdef int   nchar      = len(file)             # <<<<<<<<<<<<<<
@@ -1890,7 +1890,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_init(CYTHON_UNUSED PyObject *_
   __pyx_t_4 = PyObject_Length(__pyx_v_file); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 17, __pyx_L1_error)
   __pyx_v_nchar = __pyx_t_4;
 
-  /* "src/sir/sir_code.pyx":19
+  /* "src/sir_code.pyx":19
  * 		cdef int   nchar      = len(file)
  * 
  * 	c_init(&index, &nchar, file_lines, &nLambda)             # <<<<<<<<<<<<<<
@@ -1899,7 +1899,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_init(CYTHON_UNUSED PyObject *_
  */
   c_init((&__pyx_v_index), (&__pyx_v_nchar), __pyx_v_file_lines, (&__pyx_v_nLambda));
 
-  /* "src/sir/sir_code.pyx":21
+  /* "src/sir_code.pyx":21
  * 	c_init(&index, &nchar, file_lines, &nLambda)
  * 
  * 	return nLambda             # <<<<<<<<<<<<<<
@@ -1913,7 +1913,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_init(CYTHON_UNUSED PyObject *_
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "src/sir/sir_code.pyx":12
+  /* "src/sir_code.pyx":12
  * 	void c_synth(int *index, int *nDepth, int *nLambda, double *macroturbulence, double *model, double *stokes)
  * 
  * def init(int index, str file):             # <<<<<<<<<<<<<<
@@ -1925,7 +1925,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_init(CYTHON_UNUSED PyObject *_
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("hazel.codes.sir_code.init", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("sir3d.sir_code.init", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_ftmp);
@@ -1934,7 +1934,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_init(CYTHON_UNUSED PyObject *_
   return __pyx_r;
 }
 
-/* "src/sir/sir_code.pyx":23
+/* "src/sir_code.pyx":23
  * 	return nLambda
  * 
  * def setPSF(ar[float, ndim=1] xPSF, ar[float, ndim=1] yPSF):             # <<<<<<<<<<<<<<
@@ -1943,9 +1943,9 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_init(CYTHON_UNUSED PyObject *_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5hazel_5codes_8sir_code_3setPSF(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_5hazel_5codes_8sir_code_3setPSF = {"setPSF", (PyCFunction)__pyx_pw_5hazel_5codes_8sir_code_3setPSF, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5hazel_5codes_8sir_code_3setPSF(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5sir3d_8sir_code_3setPSF(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_5sir3d_8sir_code_3setPSF = {"setPSF", (PyCFunction)__pyx_pw_5sir3d_8sir_code_3setPSF, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_5sir3d_8sir_code_3setPSF(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_xPSF = 0;
   PyArrayObject *__pyx_v_yPSF = 0;
   PyObject *__pyx_r = 0;
@@ -1993,13 +1993,13 @@ static PyObject *__pyx_pw_5hazel_5codes_8sir_code_3setPSF(PyObject *__pyx_self, 
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("setPSF", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 23, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("hazel.codes.sir_code.setPSF", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("sir3d.sir_code.setPSF", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_xPSF), __pyx_ptype_5numpy_ndarray, 1, "xPSF", 0))) __PYX_ERR(0, 23, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_yPSF), __pyx_ptype_5numpy_ndarray, 1, "yPSF", 0))) __PYX_ERR(0, 23, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5hazel_5codes_8sir_code_2setPSF(__pyx_self, __pyx_v_xPSF, __pyx_v_yPSF);
+  __pyx_r = __pyx_pf_5sir3d_8sir_code_2setPSF(__pyx_self, __pyx_v_xPSF, __pyx_v_yPSF);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2010,7 +2010,7 @@ static PyObject *__pyx_pw_5hazel_5codes_8sir_code_3setPSF(PyObject *__pyx_self, 
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5hazel_5codes_8sir_code_2setPSF(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_xPSF, PyArrayObject *__pyx_v_yPSF) {
+static PyObject *__pyx_pf_5sir3d_8sir_code_2setPSF(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_xPSF, PyArrayObject *__pyx_v_yPSF) {
   int __pyx_v_nLambdaPSF;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_xPSF;
   __Pyx_Buffer __pyx_pybuffer_xPSF;
@@ -2041,7 +2041,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_2setPSF(CYTHON_UNUSED PyObject
   }
   __pyx_pybuffernd_yPSF.diminfo[0].strides = __pyx_pybuffernd_yPSF.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_yPSF.diminfo[0].shape = __pyx_pybuffernd_yPSF.rcbuffer->pybuffer.shape[0];
 
-  /* "src/sir/sir_code.pyx":25
+  /* "src/sir_code.pyx":25
  * def setPSF(ar[float, ndim=1] xPSF, ar[float, ndim=1] yPSF):
  * 	cdef:
  * 		int nLambdaPSF = xPSF.shape[0]             # <<<<<<<<<<<<<<
@@ -2050,7 +2050,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_2setPSF(CYTHON_UNUSED PyObject
  */
   __pyx_v_nLambdaPSF = (__pyx_v_xPSF->dimensions[0]);
 
-  /* "src/sir/sir_code.pyx":27
+  /* "src/sir_code.pyx":27
  * 		int nLambdaPSF = xPSF.shape[0]
  * 
  * 	c_setpsf(&nLambdaPSF, &xPSF[0], &yPSF[0])             # <<<<<<<<<<<<<<
@@ -2079,7 +2079,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_2setPSF(CYTHON_UNUSED PyObject
   }
   c_setpsf((&__pyx_v_nLambdaPSF), (&(*__Pyx_BufPtrStrided1d(float *, __pyx_pybuffernd_xPSF.rcbuffer->pybuffer.buf, __pyx_t_1, __pyx_pybuffernd_xPSF.diminfo[0].strides))), (&(*__Pyx_BufPtrStrided1d(float *, __pyx_pybuffernd_yPSF.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_yPSF.diminfo[0].strides))));
 
-  /* "src/sir/sir_code.pyx":29
+  /* "src/sir_code.pyx":29
  * 	c_setpsf(&nLambdaPSF, &xPSF[0], &yPSF[0])
  * 
  * 	return             # <<<<<<<<<<<<<<
@@ -2090,7 +2090,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_2setPSF(CYTHON_UNUSED PyObject
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
 
-  /* "src/sir/sir_code.pyx":23
+  /* "src/sir_code.pyx":23
  * 	return nLambda
  * 
  * def setPSF(ar[float, ndim=1] xPSF, ar[float, ndim=1] yPSF):             # <<<<<<<<<<<<<<
@@ -2107,7 +2107,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_2setPSF(CYTHON_UNUSED PyObject
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_xPSF.rcbuffer->pybuffer);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_yPSF.rcbuffer->pybuffer);
   __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
-  __Pyx_AddTraceback("hazel.codes.sir_code.setPSF", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("sir3d.sir_code.setPSF", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   goto __pyx_L2;
   __pyx_L0:;
@@ -2119,7 +2119,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_2setPSF(CYTHON_UNUSED PyObject
   return __pyx_r;
 }
 
-/* "src/sir/sir_code.pyx":31
+/* "src/sir_code.pyx":31
  * 	return
  * 
  * def synth(int index, int nLambda, ar[double, ndim=1] log_tau, ar[double, ndim=1] T, ar[double, ndim=1] Pe, ar[double, ndim=1] vmic,             # <<<<<<<<<<<<<<
@@ -2128,9 +2128,9 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_2setPSF(CYTHON_UNUSED PyObject
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5hazel_5codes_8sir_code_5synth(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_5hazel_5codes_8sir_code_5synth = {"synth", (PyCFunction)__pyx_pw_5hazel_5codes_8sir_code_5synth, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5hazel_5codes_8sir_code_5synth(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5sir3d_8sir_code_5synth(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_5sir3d_8sir_code_5synth = {"synth", (PyCFunction)__pyx_pw_5sir3d_8sir_code_5synth, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_5sir3d_8sir_code_5synth(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   int __pyx_v_index;
   int __pyx_v_nLambda;
   PyArrayObject *__pyx_v_log_tau = 0;
@@ -2277,7 +2277,7 @@ static PyObject *__pyx_pw_5hazel_5codes_8sir_code_5synth(PyObject *__pyx_self, P
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("synth", 1, 11, 11, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 31, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("hazel.codes.sir_code.synth", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("sir3d.sir_code.synth", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
@@ -2289,7 +2289,7 @@ static PyObject *__pyx_pw_5hazel_5codes_8sir_code_5synth(PyObject *__pyx_self, P
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Bx), __pyx_ptype_5numpy_ndarray, 1, "Bx", 0))) __PYX_ERR(0, 32, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_By), __pyx_ptype_5numpy_ndarray, 1, "By", 0))) __PYX_ERR(0, 32, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Bz), __pyx_ptype_5numpy_ndarray, 1, "Bz", 0))) __PYX_ERR(0, 32, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5hazel_5codes_8sir_code_4synth(__pyx_self, __pyx_v_index, __pyx_v_nLambda, __pyx_v_log_tau, __pyx_v_T, __pyx_v_Pe, __pyx_v_vmic, __pyx_v_vlos, __pyx_v_Bx, __pyx_v_By, __pyx_v_Bz, __pyx_v_macroturbulence);
+  __pyx_r = __pyx_pf_5sir3d_8sir_code_4synth(__pyx_self, __pyx_v_index, __pyx_v_nLambda, __pyx_v_log_tau, __pyx_v_T, __pyx_v_Pe, __pyx_v_vmic, __pyx_v_vlos, __pyx_v_Bx, __pyx_v_By, __pyx_v_Bz, __pyx_v_macroturbulence);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2300,7 +2300,7 @@ static PyObject *__pyx_pw_5hazel_5codes_8sir_code_5synth(PyObject *__pyx_self, P
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_index, int __pyx_v_nLambda, PyArrayObject *__pyx_v_log_tau, PyArrayObject *__pyx_v_T, PyArrayObject *__pyx_v_Pe, PyArrayObject *__pyx_v_vmic, PyArrayObject *__pyx_v_vlos, PyArrayObject *__pyx_v_Bx, PyArrayObject *__pyx_v_By, PyArrayObject *__pyx_v_Bz, double __pyx_v_macroturbulence) {
+static PyObject *__pyx_pf_5sir3d_8sir_code_4synth(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_index, int __pyx_v_nLambda, PyArrayObject *__pyx_v_log_tau, PyArrayObject *__pyx_v_T, PyArrayObject *__pyx_v_Pe, PyArrayObject *__pyx_v_vmic, PyArrayObject *__pyx_v_vlos, PyArrayObject *__pyx_v_Bx, PyArrayObject *__pyx_v_By, PyArrayObject *__pyx_v_Bz, double __pyx_v_macroturbulence) {
   int __pyx_v_nDepth;
   PyArrayObject *__pyx_v_model = 0;
   PyArrayObject *__pyx_v_stokes = 0;
@@ -2420,7 +2420,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
   }
   __pyx_pybuffernd_Bz.diminfo[0].strides = __pyx_pybuffernd_Bz.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Bz.diminfo[0].shape = __pyx_pybuffernd_Bz.rcbuffer->pybuffer.shape[0];
 
-  /* "src/sir/sir_code.pyx":35
+  /* "src/sir_code.pyx":35
  * 	double macroturbulence):
  * 	cdef:
  * 		int nDepth = len(log_tau)             # <<<<<<<<<<<<<<
@@ -2430,7 +2430,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
   __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_log_tau)); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 35, __pyx_L1_error)
   __pyx_v_nDepth = __pyx_t_1;
 
-  /* "src/sir/sir_code.pyx":36
+  /* "src/sir_code.pyx":36
  * 	cdef:
  * 		int nDepth = len(log_tau)
  * 		ar[double, ndim=2] model = empty((8,nDepth), order='F')             # <<<<<<<<<<<<<<
@@ -2476,7 +2476,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
   __pyx_v_model = ((PyArrayObject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "src/sir/sir_code.pyx":37
+  /* "src/sir_code.pyx":37
  * 		int nDepth = len(log_tau)
  * 		ar[double, ndim=2] model = empty((8,nDepth), order='F')
  * 		ar[double, ndim=2] stokes = empty((5,nLambda), order='F')             # <<<<<<<<<<<<<<
@@ -2522,7 +2522,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
   __pyx_v_stokes = ((PyArrayObject *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "src/sir/sir_code.pyx":39
+  /* "src/sir_code.pyx":39
  * 		ar[double, ndim=2] stokes = empty((5,nLambda), order='F')
  * 
  * 	model[0,:] = log_tau             # <<<<<<<<<<<<<<
@@ -2531,7 +2531,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
  */
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__3, ((PyObject *)__pyx_v_log_tau)) < 0)) __PYX_ERR(0, 39, __pyx_L1_error)
 
-  /* "src/sir/sir_code.pyx":40
+  /* "src/sir_code.pyx":40
  * 
  * 	model[0,:] = log_tau
  * 	model[1,:] = T             # <<<<<<<<<<<<<<
@@ -2540,7 +2540,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
  */
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__5, ((PyObject *)__pyx_v_T)) < 0)) __PYX_ERR(0, 40, __pyx_L1_error)
 
-  /* "src/sir/sir_code.pyx":41
+  /* "src/sir_code.pyx":41
  * 	model[0,:] = log_tau
  * 	model[1,:] = T
  * 	model[2,:] = Pe             # <<<<<<<<<<<<<<
@@ -2549,7 +2549,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
  */
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__7, ((PyObject *)__pyx_v_Pe)) < 0)) __PYX_ERR(0, 41, __pyx_L1_error)
 
-  /* "src/sir/sir_code.pyx":42
+  /* "src/sir_code.pyx":42
  * 	model[1,:] = T
  * 	model[2,:] = Pe
  * 	model[3,:] = vmic             # <<<<<<<<<<<<<<
@@ -2558,7 +2558,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
  */
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__9, ((PyObject *)__pyx_v_vmic)) < 0)) __PYX_ERR(0, 42, __pyx_L1_error)
 
-  /* "src/sir/sir_code.pyx":43
+  /* "src/sir_code.pyx":43
  * 	model[2,:] = Pe
  * 	model[3,:] = vmic
  * 	model[4,:] = np.sqrt(Bx**2 + By**2 + Bz**2)             # <<<<<<<<<<<<<<
@@ -2633,7 +2633,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__11, __pyx_t_2) < 0)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "src/sir/sir_code.pyx":44
+  /* "src/sir_code.pyx":44
  * 	model[3,:] = vmic
  * 	model[4,:] = np.sqrt(Bx**2 + By**2 + Bz**2)
  * 	model[5,:] = vlos             # <<<<<<<<<<<<<<
@@ -2642,7 +2642,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
  */
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__13, ((PyObject *)__pyx_v_vlos)) < 0)) __PYX_ERR(0, 44, __pyx_L1_error)
 
-  /* "src/sir/sir_code.pyx":45
+  /* "src/sir_code.pyx":45
  * 	model[4,:] = np.sqrt(Bx**2 + By**2 + Bz**2)
  * 	model[5,:] = vlos
  * 	model[6,:] = 180.0 / np.pi * np.arccos(Bz / (model[4,:] + 1e-8))      # Regularize in case B=0             # <<<<<<<<<<<<<<
@@ -2723,7 +2723,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__17, __pyx_t_3) < 0)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "src/sir/sir_code.pyx":46
+  /* "src/sir_code.pyx":46
  * 	model[5,:] = vlos
  * 	model[6,:] = 180.0 / np.pi * np.arccos(Bz / (model[4,:] + 1e-8))      # Regularize in case B=0
  * 	model[7,:] = 180.0 / np.pi * np.arctan2(By, Bx)             # <<<<<<<<<<<<<<
@@ -2795,7 +2795,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__19, __pyx_t_9) < 0)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-  /* "src/sir/sir_code.pyx":48
+  /* "src/sir_code.pyx":48
  * 	model[7,:] = 180.0 / np.pi * np.arctan2(By, Bx)
  * 
  * 	c_synth(&index, &nDepth, &nLambda, &macroturbulence, &model[0,0], <double*> stokes.data)             # <<<<<<<<<<<<<<
@@ -2819,7 +2819,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
   }
   c_synth((&__pyx_v_index), (&__pyx_v_nDepth), (&__pyx_v_nLambda), (&__pyx_v_macroturbulence), (&(*__Pyx_BufPtrStrided2d(double *, __pyx_pybuffernd_model.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_model.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_model.diminfo[1].strides))), ((double *)__pyx_v_stokes->data));
 
-  /* "src/sir/sir_code.pyx":50
+  /* "src/sir_code.pyx":50
  * 	c_synth(&index, &nDepth, &nLambda, &macroturbulence, &model[0,0], <double*> stokes.data)
  * 
  * 	return stokes             # <<<<<<<<<<<<<<
@@ -2831,7 +2831,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
   __pyx_r = ((PyObject *)__pyx_v_stokes);
   goto __pyx_L0;
 
-  /* "src/sir/sir_code.pyx":31
+  /* "src/sir_code.pyx":31
  * 	return
  * 
  * def synth(int index, int nLambda, ar[double, ndim=1] log_tau, ar[double, ndim=1] T, ar[double, ndim=1] Pe, ar[double, ndim=1] vmic,             # <<<<<<<<<<<<<<
@@ -2862,7 +2862,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_vlos.rcbuffer->pybuffer);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_vmic.rcbuffer->pybuffer);
   __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
-  __Pyx_AddTraceback("hazel.codes.sir_code.synth", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("sir3d.sir_code.synth", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   goto __pyx_L2;
   __pyx_L0:;
@@ -2884,7 +2884,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
   return __pyx_r;
 }
 
-/* "src/sir/sir_code.pyx":52
+/* "src/sir_code.pyx":52
  * 	return stokes
  * 
  * def synthRF(int index, int nLambda, ar[float, ndim=1] log_tau, ar[float, ndim=1] T, ar[float, ndim=1] Pe, ar[float, ndim=1] vmic,             # <<<<<<<<<<<<<<
@@ -2893,9 +2893,9 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_4synth(CYTHON_UNUSED PyObject 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5hazel_5codes_8sir_code_7synthRF(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_5hazel_5codes_8sir_code_7synthRF = {"synthRF", (PyCFunction)__pyx_pw_5hazel_5codes_8sir_code_7synthRF, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5hazel_5codes_8sir_code_7synthRF(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5sir3d_8sir_code_7synthRF(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_5sir3d_8sir_code_7synthRF = {"synthRF", (PyCFunction)__pyx_pw_5sir3d_8sir_code_7synthRF, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_5sir3d_8sir_code_7synthRF(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   int __pyx_v_index;
   int __pyx_v_nLambda;
   PyArrayObject *__pyx_v_log_tau = 0;
@@ -3042,7 +3042,7 @@ static PyObject *__pyx_pw_5hazel_5codes_8sir_code_7synthRF(PyObject *__pyx_self,
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("synthRF", 1, 11, 11, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 52, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("hazel.codes.sir_code.synthRF", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("sir3d.sir_code.synthRF", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
@@ -3054,7 +3054,7 @@ static PyObject *__pyx_pw_5hazel_5codes_8sir_code_7synthRF(PyObject *__pyx_self,
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Bx), __pyx_ptype_5numpy_ndarray, 1, "Bx", 0))) __PYX_ERR(0, 53, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_By), __pyx_ptype_5numpy_ndarray, 1, "By", 0))) __PYX_ERR(0, 53, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_Bz), __pyx_ptype_5numpy_ndarray, 1, "Bz", 0))) __PYX_ERR(0, 53, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5hazel_5codes_8sir_code_6synthRF(__pyx_self, __pyx_v_index, __pyx_v_nLambda, __pyx_v_log_tau, __pyx_v_T, __pyx_v_Pe, __pyx_v_vmic, __pyx_v_vlos, __pyx_v_Bx, __pyx_v_By, __pyx_v_Bz, __pyx_v_macroturbulence);
+  __pyx_r = __pyx_pf_5sir3d_8sir_code_6synthRF(__pyx_self, __pyx_v_index, __pyx_v_nLambda, __pyx_v_log_tau, __pyx_v_T, __pyx_v_Pe, __pyx_v_vmic, __pyx_v_vlos, __pyx_v_Bx, __pyx_v_By, __pyx_v_Bz, __pyx_v_macroturbulence);
 
   /* function exit code */
   goto __pyx_L0;
@@ -3065,7 +3065,7 @@ static PyObject *__pyx_pw_5hazel_5codes_8sir_code_7synthRF(PyObject *__pyx_self,
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_index, int __pyx_v_nLambda, PyArrayObject *__pyx_v_log_tau, PyArrayObject *__pyx_v_T, PyArrayObject *__pyx_v_Pe, PyArrayObject *__pyx_v_vmic, PyArrayObject *__pyx_v_vlos, PyArrayObject *__pyx_v_Bx, PyArrayObject *__pyx_v_By, PyArrayObject *__pyx_v_Bz, float __pyx_v_macroturbulence) {
+static PyObject *__pyx_pf_5sir3d_8sir_code_6synthRF(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_index, int __pyx_v_nLambda, PyArrayObject *__pyx_v_log_tau, PyArrayObject *__pyx_v_T, PyArrayObject *__pyx_v_Pe, PyArrayObject *__pyx_v_vmic, PyArrayObject *__pyx_v_vlos, PyArrayObject *__pyx_v_Bx, PyArrayObject *__pyx_v_By, PyArrayObject *__pyx_v_Bz, float __pyx_v_macroturbulence) {
   int __pyx_v_nDepth;
   PyArrayObject *__pyx_v_model = 0;
   PyArrayObject *__pyx_v_stokes = 0;
@@ -3249,7 +3249,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   }
   __pyx_pybuffernd_Bz.diminfo[0].strides = __pyx_pybuffernd_Bz.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_Bz.diminfo[0].shape = __pyx_pybuffernd_Bz.rcbuffer->pybuffer.shape[0];
 
-  /* "src/sir/sir_code.pyx":57
+  /* "src/sir_code.pyx":57
  * 
  * 	cdef:
  * 		int nDepth = len(log_tau)             # <<<<<<<<<<<<<<
@@ -3259,7 +3259,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_log_tau)); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 57, __pyx_L1_error)
   __pyx_v_nDepth = __pyx_t_1;
 
-  /* "src/sir/sir_code.pyx":58
+  /* "src/sir_code.pyx":58
  * 	cdef:
  * 		int nDepth = len(log_tau)
  * 		ar[float, ndim=2] model = empty((8,nDepth), order='F', dtype=np.float32)             # <<<<<<<<<<<<<<
@@ -3312,7 +3312,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   __pyx_v_model = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "src/sir/sir_code.pyx":59
+  /* "src/sir_code.pyx":59
  * 		int nDepth = len(log_tau)
  * 		ar[float, ndim=2] model = empty((8,nDepth), order='F', dtype=np.float32)
  * 		ar[float, ndim=2] stokes = empty((5,nLambda), order='F', dtype=np.float32)             # <<<<<<<<<<<<<<
@@ -3365,7 +3365,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   __pyx_v_stokes = ((PyArrayObject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "src/sir/sir_code.pyx":60
+  /* "src/sir_code.pyx":60
  * 		ar[float, ndim=2] model = empty((8,nDepth), order='F', dtype=np.float32)
  * 		ar[float, ndim=2] stokes = empty((5,nLambda), order='F', dtype=np.float32)
  * 		ar[float, ndim=3] rt = empty((4,nLambda,nDepth), order='F', dtype=np.float32)             # <<<<<<<<<<<<<<
@@ -3423,7 +3423,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   __pyx_v_rt = ((PyArrayObject *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "src/sir/sir_code.pyx":61
+  /* "src/sir_code.pyx":61
  * 		ar[float, ndim=2] stokes = empty((5,nLambda), order='F', dtype=np.float32)
  * 		ar[float, ndim=3] rt = empty((4,nLambda,nDepth), order='F', dtype=np.float32)
  * 		ar[float, ndim=3] rp = empty((4,nLambda,nDepth), order='F', dtype=np.float32)             # <<<<<<<<<<<<<<
@@ -3481,7 +3481,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   __pyx_v_rp = ((PyArrayObject *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "src/sir/sir_code.pyx":62
+  /* "src/sir_code.pyx":62
  * 		ar[float, ndim=3] rt = empty((4,nLambda,nDepth), order='F', dtype=np.float32)
  * 		ar[float, ndim=3] rp = empty((4,nLambda,nDepth), order='F', dtype=np.float32)
  * 		ar[float, ndim=3] rh = empty((4,nLambda,nDepth), order='F', dtype=np.float32)             # <<<<<<<<<<<<<<
@@ -3539,7 +3539,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   __pyx_v_rh = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "src/sir/sir_code.pyx":63
+  /* "src/sir_code.pyx":63
  * 		ar[float, ndim=3] rp = empty((4,nLambda,nDepth), order='F', dtype=np.float32)
  * 		ar[float, ndim=3] rh = empty((4,nLambda,nDepth), order='F', dtype=np.float32)
  * 		ar[float, ndim=3] rv = empty((4,nLambda,nDepth), order='F', dtype=np.float32)             # <<<<<<<<<<<<<<
@@ -3597,7 +3597,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   __pyx_v_rv = ((PyArrayObject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "src/sir/sir_code.pyx":64
+  /* "src/sir_code.pyx":64
  * 		ar[float, ndim=3] rh = empty((4,nLambda,nDepth), order='F', dtype=np.float32)
  * 		ar[float, ndim=3] rv = empty((4,nLambda,nDepth), order='F', dtype=np.float32)
  * 		ar[float, ndim=3] rf = empty((4,nLambda,nDepth), order='F', dtype=np.float32)             # <<<<<<<<<<<<<<
@@ -3655,7 +3655,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   __pyx_v_rf = ((PyArrayObject *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "src/sir/sir_code.pyx":65
+  /* "src/sir_code.pyx":65
  * 		ar[float, ndim=3] rv = empty((4,nLambda,nDepth), order='F', dtype=np.float32)
  * 		ar[float, ndim=3] rf = empty((4,nLambda,nDepth), order='F', dtype=np.float32)
  * 		ar[float, ndim=3] rg = empty((4,nLambda,nDepth), order='F', dtype=np.float32)             # <<<<<<<<<<<<<<
@@ -3713,7 +3713,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   __pyx_v_rg = ((PyArrayObject *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "src/sir/sir_code.pyx":66
+  /* "src/sir_code.pyx":66
  * 		ar[float, ndim=3] rf = empty((4,nLambda,nDepth), order='F', dtype=np.float32)
  * 		ar[float, ndim=3] rg = empty((4,nLambda,nDepth), order='F', dtype=np.float32)
  * 		ar[float, ndim=3] rm = empty((4,nLambda,nDepth), order='F', dtype=np.float32)             # <<<<<<<<<<<<<<
@@ -3771,7 +3771,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   __pyx_v_rm = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "src/sir/sir_code.pyx":67
+  /* "src/sir_code.pyx":67
  * 		ar[float, ndim=3] rg = empty((4,nLambda,nDepth), order='F', dtype=np.float32)
  * 		ar[float, ndim=3] rm = empty((4,nLambda,nDepth), order='F', dtype=np.float32)
  * 		ar[float, ndim=2] rmac = empty((4,nLambda), order='F', dtype=np.float32)             # <<<<<<<<<<<<<<
@@ -3824,7 +3824,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   __pyx_v_rmac = ((PyArrayObject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "src/sir/sir_code.pyx":69
+  /* "src/sir_code.pyx":69
  * 		ar[float, ndim=2] rmac = empty((4,nLambda), order='F', dtype=np.float32)
  * 
  * 	model[0,:] = log_tau             # <<<<<<<<<<<<<<
@@ -3833,7 +3833,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
  */
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__21, ((PyObject *)__pyx_v_log_tau)) < 0)) __PYX_ERR(0, 69, __pyx_L1_error)
 
-  /* "src/sir/sir_code.pyx":70
+  /* "src/sir_code.pyx":70
  * 
  * 	model[0,:] = log_tau
  * 	model[1,:] = T             # <<<<<<<<<<<<<<
@@ -3842,7 +3842,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
  */
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__23, ((PyObject *)__pyx_v_T)) < 0)) __PYX_ERR(0, 70, __pyx_L1_error)
 
-  /* "src/sir/sir_code.pyx":71
+  /* "src/sir_code.pyx":71
  * 	model[0,:] = log_tau
  * 	model[1,:] = T
  * 	model[2,:] = Pe             # <<<<<<<<<<<<<<
@@ -3851,7 +3851,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
  */
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__25, ((PyObject *)__pyx_v_Pe)) < 0)) __PYX_ERR(0, 71, __pyx_L1_error)
 
-  /* "src/sir/sir_code.pyx":72
+  /* "src/sir_code.pyx":72
  * 	model[1,:] = T
  * 	model[2,:] = Pe
  * 	model[3,:] = vmic             # <<<<<<<<<<<<<<
@@ -3860,7 +3860,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
  */
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__27, ((PyObject *)__pyx_v_vmic)) < 0)) __PYX_ERR(0, 72, __pyx_L1_error)
 
-  /* "src/sir/sir_code.pyx":73
+  /* "src/sir_code.pyx":73
  * 	model[2,:] = Pe
  * 	model[3,:] = vmic
  * 	model[4,:] = np.sqrt(Bx**2 + By**2 + Bz**2)             # <<<<<<<<<<<<<<
@@ -3935,7 +3935,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__29, __pyx_t_5) < 0)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "src/sir/sir_code.pyx":74
+  /* "src/sir_code.pyx":74
  * 	model[3,:] = vmic
  * 	model[4,:] = np.sqrt(Bx**2 + By**2 + Bz**2)
  * 	model[5,:] = vlos             # <<<<<<<<<<<<<<
@@ -3944,7 +3944,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
  */
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__31, ((PyObject *)__pyx_v_vlos)) < 0)) __PYX_ERR(0, 74, __pyx_L1_error)
 
-  /* "src/sir/sir_code.pyx":75
+  /* "src/sir_code.pyx":75
  * 	model[4,:] = np.sqrt(Bx**2 + By**2 + Bz**2)
  * 	model[5,:] = vlos
  * 	model[6,:] = 180.0 / np.pi * np.arccos(Bz / model[4,:])             # <<<<<<<<<<<<<<
@@ -4022,7 +4022,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__35, __pyx_t_4) < 0)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/sir/sir_code.pyx":76
+  /* "src/sir_code.pyx":76
  * 	model[5,:] = vlos
  * 	model[6,:] = 180.0 / np.pi * np.arccos(Bz / model[4,:])
  * 	model[7,:] = 180.0 / np.pi * np.arctan2(By, Bx)             # <<<<<<<<<<<<<<
@@ -4094,7 +4094,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_model), __pyx_tuple__37, __pyx_t_17) < 0)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
 
-  /* "src/sir/sir_code.pyx":78
+  /* "src/sir_code.pyx":78
  * 	model[7,:] = 180.0 / np.pi * np.arctan2(By, Bx)
  * 
  * 	c_synthrf(&index, &nDepth, &nLambda, &macroturbulence, &model[0,0], <float*> stokes.data, <float*> rt.data, <float*> rp.data,             # <<<<<<<<<<<<<<
@@ -4117,7 +4117,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
     __PYX_ERR(0, 78, __pyx_L1_error)
   }
 
-  /* "src/sir/sir_code.pyx":79
+  /* "src/sir_code.pyx":79
  * 
  * 	c_synthrf(&index, &nDepth, &nLambda, &macroturbulence, &model[0,0], <float*> stokes.data, <float*> rt.data, <float*> rp.data,
  * 		<float*> rh.data, <float*> rv.data, <float*> rf.data, <float*> rg.data, <float*> rm.data, <float*> rmac.data)             # <<<<<<<<<<<<<<
@@ -4126,7 +4126,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
  */
   c_synthrf((&__pyx_v_index), (&__pyx_v_nDepth), (&__pyx_v_nLambda), (&__pyx_v_macroturbulence), (&(*__Pyx_BufPtrStrided2d(float *, __pyx_pybuffernd_model.rcbuffer->pybuffer.buf, __pyx_t_19, __pyx_pybuffernd_model.diminfo[0].strides, __pyx_t_20, __pyx_pybuffernd_model.diminfo[1].strides))), ((float *)__pyx_v_stokes->data), ((float *)__pyx_v_rt->data), ((float *)__pyx_v_rp->data), ((float *)__pyx_v_rh->data), ((float *)__pyx_v_rv->data), ((float *)__pyx_v_rf->data), ((float *)__pyx_v_rg->data), ((float *)__pyx_v_rm->data), ((float *)__pyx_v_rmac->data));
 
-  /* "src/sir/sir_code.pyx":81
+  /* "src/sir_code.pyx":81
  * 		<float*> rh.data, <float*> rv.data, <float*> rf.data, <float*> rg.data, <float*> rm.data, <float*> rmac.data)
  * 
  * 	return stokes, [rt, rp, rh, rv, rf, rg, rm, rmac]             # <<<<<<<<<<<<<<
@@ -4170,7 +4170,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "src/sir/sir_code.pyx":52
+  /* "src/sir_code.pyx":52
  * 	return stokes
  * 
  * def synthRF(int index, int nLambda, ar[float, ndim=1] log_tau, ar[float, ndim=1] T, ar[float, ndim=1] Pe, ar[float, ndim=1] vmic,             # <<<<<<<<<<<<<<
@@ -4209,7 +4209,7 @@ static PyObject *__pyx_pf_5hazel_5codes_8sir_code_6synthRF(CYTHON_UNUSED PyObjec
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_vlos.rcbuffer->pybuffer);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_vmic.rcbuffer->pybuffer);
   __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
-  __Pyx_AddTraceback("hazel.codes.sir_code.synthRF", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("sir3d.sir_code.synthRF", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   goto __pyx_L2;
   __pyx_L0:;
@@ -6890,7 +6890,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_file_lines, __pyx_k_file_lines, sizeof(__pyx_k_file_lines), 0, 0, 1, 1},
   {&__pyx_n_s_float32, __pyx_k_float32, sizeof(__pyx_k_float32), 0, 0, 1, 1},
   {&__pyx_n_s_ftmp, __pyx_k_ftmp, sizeof(__pyx_k_ftmp), 0, 0, 1, 1},
-  {&__pyx_n_s_hazel_codes_sir_code, __pyx_k_hazel_codes_sir_code, sizeof(__pyx_k_hazel_codes_sir_code), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_index, __pyx_k_index, sizeof(__pyx_k_index), 0, 0, 1, 1},
   {&__pyx_n_s_init, __pyx_k_init, sizeof(__pyx_k_init), 0, 0, 1, 1},
@@ -6920,8 +6919,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_rt, __pyx_k_rt, sizeof(__pyx_k_rt), 0, 0, 1, 1},
   {&__pyx_n_s_rv, __pyx_k_rv, sizeof(__pyx_k_rv), 0, 0, 1, 1},
   {&__pyx_n_s_setPSF, __pyx_k_setPSF, sizeof(__pyx_k_setPSF), 0, 0, 1, 1},
+  {&__pyx_n_s_sir3d_sir_code, __pyx_k_sir3d_sir_code, sizeof(__pyx_k_sir3d_sir_code), 0, 0, 1, 1},
   {&__pyx_n_s_sqrt, __pyx_k_sqrt, sizeof(__pyx_k_sqrt), 0, 0, 1, 1},
-  {&__pyx_kp_s_src_sir_sir_code_pyx, __pyx_k_src_sir_sir_code_pyx, sizeof(__pyx_k_src_sir_sir_code_pyx), 0, 0, 1, 0},
+  {&__pyx_kp_s_src_sir_code_pyx, __pyx_k_src_sir_code_pyx, sizeof(__pyx_k_src_sir_code_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_stokes, __pyx_k_stokes, sizeof(__pyx_k_stokes), 0, 0, 1, 1},
   {&__pyx_n_s_synth, __pyx_k_synth, sizeof(__pyx_k_synth), 0, 0, 1, 1},
   {&__pyx_n_s_synthRF, __pyx_k_synthRF, sizeof(__pyx_k_synthRF), 0, 0, 1, 1},
@@ -6947,7 +6947,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "src/sir/sir_code.pyx":15
+  /* "src/sir_code.pyx":15
  * 	cdef:
  * 		int nLambda
  * 		ftmp = file.encode('UTF-8')             # <<<<<<<<<<<<<<
@@ -6958,7 +6958,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "src/sir/sir_code.pyx":39
+  /* "src/sir_code.pyx":39
  * 		ar[double, ndim=2] stokes = empty((5,nLambda), order='F')
  * 
  * 	model[0,:] = log_tau             # <<<<<<<<<<<<<<
@@ -6972,7 +6972,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "src/sir/sir_code.pyx":40
+  /* "src/sir_code.pyx":40
  * 
  * 	model[0,:] = log_tau
  * 	model[1,:] = T             # <<<<<<<<<<<<<<
@@ -6986,7 +6986,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
 
-  /* "src/sir/sir_code.pyx":41
+  /* "src/sir_code.pyx":41
  * 	model[0,:] = log_tau
  * 	model[1,:] = T
  * 	model[2,:] = Pe             # <<<<<<<<<<<<<<
@@ -7000,7 +7000,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
 
-  /* "src/sir/sir_code.pyx":42
+  /* "src/sir_code.pyx":42
  * 	model[1,:] = T
  * 	model[2,:] = Pe
  * 	model[3,:] = vmic             # <<<<<<<<<<<<<<
@@ -7014,7 +7014,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
 
-  /* "src/sir/sir_code.pyx":43
+  /* "src/sir_code.pyx":43
  * 	model[2,:] = Pe
  * 	model[3,:] = vmic
  * 	model[4,:] = np.sqrt(Bx**2 + By**2 + Bz**2)             # <<<<<<<<<<<<<<
@@ -7028,7 +7028,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
 
-  /* "src/sir/sir_code.pyx":44
+  /* "src/sir_code.pyx":44
  * 	model[3,:] = vmic
  * 	model[4,:] = np.sqrt(Bx**2 + By**2 + Bz**2)
  * 	model[5,:] = vlos             # <<<<<<<<<<<<<<
@@ -7042,7 +7042,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
 
-  /* "src/sir/sir_code.pyx":45
+  /* "src/sir_code.pyx":45
  * 	model[4,:] = np.sqrt(Bx**2 + By**2 + Bz**2)
  * 	model[5,:] = vlos
  * 	model[6,:] = 180.0 / np.pi * np.arccos(Bz / (model[4,:] + 1e-8))      # Regularize in case B=0             # <<<<<<<<<<<<<<
@@ -7062,7 +7062,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__17);
   __Pyx_GIVEREF(__pyx_tuple__17);
 
-  /* "src/sir/sir_code.pyx":46
+  /* "src/sir_code.pyx":46
  * 	model[5,:] = vlos
  * 	model[6,:] = 180.0 / np.pi * np.arccos(Bz / (model[4,:] + 1e-8))      # Regularize in case B=0
  * 	model[7,:] = 180.0 / np.pi * np.arctan2(By, Bx)             # <<<<<<<<<<<<<<
@@ -7076,7 +7076,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__19);
   __Pyx_GIVEREF(__pyx_tuple__19);
 
-  /* "src/sir/sir_code.pyx":69
+  /* "src/sir_code.pyx":69
  * 		ar[float, ndim=2] rmac = empty((4,nLambda), order='F', dtype=np.float32)
  * 
  * 	model[0,:] = log_tau             # <<<<<<<<<<<<<<
@@ -7090,7 +7090,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__21);
   __Pyx_GIVEREF(__pyx_tuple__21);
 
-  /* "src/sir/sir_code.pyx":70
+  /* "src/sir_code.pyx":70
  * 
  * 	model[0,:] = log_tau
  * 	model[1,:] = T             # <<<<<<<<<<<<<<
@@ -7104,7 +7104,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__23);
   __Pyx_GIVEREF(__pyx_tuple__23);
 
-  /* "src/sir/sir_code.pyx":71
+  /* "src/sir_code.pyx":71
  * 	model[0,:] = log_tau
  * 	model[1,:] = T
  * 	model[2,:] = Pe             # <<<<<<<<<<<<<<
@@ -7118,7 +7118,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__25);
   __Pyx_GIVEREF(__pyx_tuple__25);
 
-  /* "src/sir/sir_code.pyx":72
+  /* "src/sir_code.pyx":72
  * 	model[1,:] = T
  * 	model[2,:] = Pe
  * 	model[3,:] = vmic             # <<<<<<<<<<<<<<
@@ -7132,7 +7132,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__27);
   __Pyx_GIVEREF(__pyx_tuple__27);
 
-  /* "src/sir/sir_code.pyx":73
+  /* "src/sir_code.pyx":73
  * 	model[2,:] = Pe
  * 	model[3,:] = vmic
  * 	model[4,:] = np.sqrt(Bx**2 + By**2 + Bz**2)             # <<<<<<<<<<<<<<
@@ -7146,7 +7146,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__29);
   __Pyx_GIVEREF(__pyx_tuple__29);
 
-  /* "src/sir/sir_code.pyx":74
+  /* "src/sir_code.pyx":74
  * 	model[3,:] = vmic
  * 	model[4,:] = np.sqrt(Bx**2 + By**2 + Bz**2)
  * 	model[5,:] = vlos             # <<<<<<<<<<<<<<
@@ -7160,7 +7160,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__31);
   __Pyx_GIVEREF(__pyx_tuple__31);
 
-  /* "src/sir/sir_code.pyx":75
+  /* "src/sir_code.pyx":75
  * 	model[4,:] = np.sqrt(Bx**2 + By**2 + Bz**2)
  * 	model[5,:] = vlos
  * 	model[6,:] = 180.0 / np.pi * np.arccos(Bz / model[4,:])             # <<<<<<<<<<<<<<
@@ -7180,7 +7180,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__35);
   __Pyx_GIVEREF(__pyx_tuple__35);
 
-  /* "src/sir/sir_code.pyx":76
+  /* "src/sir_code.pyx":76
  * 	model[5,:] = vlos
  * 	model[6,:] = 180.0 / np.pi * np.arccos(Bz / model[4,:])
  * 	model[7,:] = 180.0 / np.pi * np.arctan2(By, Bx)             # <<<<<<<<<<<<<<
@@ -7291,7 +7291,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__46);
   __Pyx_GIVEREF(__pyx_tuple__46);
 
-  /* "src/sir/sir_code.pyx":12
+  /* "src/sir_code.pyx":12
  * 	void c_synth(int *index, int *nDepth, int *nLambda, double *macroturbulence, double *model, double *stokes)
  * 
  * def init(int index, str file):             # <<<<<<<<<<<<<<
@@ -7301,9 +7301,9 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__47 = PyTuple_Pack(6, __pyx_n_s_index, __pyx_n_s_file, __pyx_n_s_nLambda, __pyx_n_s_ftmp, __pyx_n_s_file_lines, __pyx_n_s_nchar); if (unlikely(!__pyx_tuple__47)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__47);
   __Pyx_GIVEREF(__pyx_tuple__47);
-  __pyx_codeobj__48 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__47, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_sir_sir_code_pyx, __pyx_n_s_init, 12, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__48)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_codeobj__48 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__47, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_sir_code_pyx, __pyx_n_s_init, 12, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__48)) __PYX_ERR(0, 12, __pyx_L1_error)
 
-  /* "src/sir/sir_code.pyx":23
+  /* "src/sir_code.pyx":23
  * 	return nLambda
  * 
  * def setPSF(ar[float, ndim=1] xPSF, ar[float, ndim=1] yPSF):             # <<<<<<<<<<<<<<
@@ -7313,9 +7313,9 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__49 = PyTuple_Pack(3, __pyx_n_s_xPSF, __pyx_n_s_yPSF, __pyx_n_s_nLambdaPSF); if (unlikely(!__pyx_tuple__49)) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__49);
   __Pyx_GIVEREF(__pyx_tuple__49);
-  __pyx_codeobj__50 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__49, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_sir_sir_code_pyx, __pyx_n_s_setPSF, 23, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__50)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_codeobj__50 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__49, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_sir_code_pyx, __pyx_n_s_setPSF, 23, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__50)) __PYX_ERR(0, 23, __pyx_L1_error)
 
-  /* "src/sir/sir_code.pyx":31
+  /* "src/sir_code.pyx":31
  * 	return
  * 
  * def synth(int index, int nLambda, ar[double, ndim=1] log_tau, ar[double, ndim=1] T, ar[double, ndim=1] Pe, ar[double, ndim=1] vmic,             # <<<<<<<<<<<<<<
@@ -7325,9 +7325,9 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__51 = PyTuple_Pack(14, __pyx_n_s_index, __pyx_n_s_nLambda, __pyx_n_s_log_tau, __pyx_n_s_T, __pyx_n_s_Pe, __pyx_n_s_vmic, __pyx_n_s_vlos, __pyx_n_s_Bx, __pyx_n_s_By, __pyx_n_s_Bz, __pyx_n_s_macroturbulence, __pyx_n_s_nDepth, __pyx_n_s_model, __pyx_n_s_stokes); if (unlikely(!__pyx_tuple__51)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__51);
   __Pyx_GIVEREF(__pyx_tuple__51);
-  __pyx_codeobj__52 = (PyObject*)__Pyx_PyCode_New(11, 0, 14, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__51, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_sir_sir_code_pyx, __pyx_n_s_synth, 31, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__52)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_codeobj__52 = (PyObject*)__Pyx_PyCode_New(11, 0, 14, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__51, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_sir_code_pyx, __pyx_n_s_synth, 31, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__52)) __PYX_ERR(0, 31, __pyx_L1_error)
 
-  /* "src/sir/sir_code.pyx":52
+  /* "src/sir_code.pyx":52
  * 	return stokes
  * 
  * def synthRF(int index, int nLambda, ar[float, ndim=1] log_tau, ar[float, ndim=1] T, ar[float, ndim=1] Pe, ar[float, ndim=1] vmic,             # <<<<<<<<<<<<<<
@@ -7337,7 +7337,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__53 = PyTuple_Pack(22, __pyx_n_s_index, __pyx_n_s_nLambda, __pyx_n_s_log_tau, __pyx_n_s_T, __pyx_n_s_Pe, __pyx_n_s_vmic, __pyx_n_s_vlos, __pyx_n_s_Bx, __pyx_n_s_By, __pyx_n_s_Bz, __pyx_n_s_macroturbulence, __pyx_n_s_nDepth, __pyx_n_s_model, __pyx_n_s_stokes, __pyx_n_s_rt, __pyx_n_s_rp, __pyx_n_s_rh, __pyx_n_s_rv, __pyx_n_s_rf, __pyx_n_s_rg, __pyx_n_s_rm, __pyx_n_s_rmac); if (unlikely(!__pyx_tuple__53)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__53);
   __Pyx_GIVEREF(__pyx_tuple__53);
-  __pyx_codeobj__54 = (PyObject*)__Pyx_PyCode_New(11, 0, 22, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__53, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_sir_sir_code_pyx, __pyx_n_s_synthRF, 52, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__54)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_codeobj__54 = (PyObject*)__Pyx_PyCode_New(11, 0, 22, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__53, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_sir_code_pyx, __pyx_n_s_synthRF, 52, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__54)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -7482,14 +7482,14 @@ static int __pyx_pymod_exec_sir_code(PyObject *__pyx_pyinit_module)
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_hazel__codes__sir_code) {
+  if (__pyx_module_is_main_sir3d__sir_code) {
     if (PyObject_SetAttrString(__pyx_m, "__name__", __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "hazel.codes.sir_code")) {
-      if (unlikely(PyDict_SetItemString(modules, "hazel.codes.sir_code", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "sir3d.sir_code")) {
+      if (unlikely(PyDict_SetItemString(modules, "sir3d.sir_code", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -7521,7 +7521,7 @@ static int __pyx_pymod_exec_sir_code(PyObject *__pyx_pyinit_module)
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "src/sir/sir_code.pyx":2
+  /* "src/sir_code.pyx":2
  * from numpy cimport ndarray as ar
  * from numpy import empty, ascontiguousarray             # <<<<<<<<<<<<<<
  * import numpy as np
@@ -7548,7 +7548,7 @@ static int __pyx_pymod_exec_sir_code(PyObject *__pyx_pyinit_module)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "src/sir/sir_code.pyx":3
+  /* "src/sir_code.pyx":3
  * from numpy cimport ndarray as ar
  * from numpy import empty, ascontiguousarray
  * import numpy as np             # <<<<<<<<<<<<<<
@@ -7560,55 +7560,55 @@ static int __pyx_pymod_exec_sir_code(PyObject *__pyx_pyinit_module)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_2) < 0) __PYX_ERR(0, 3, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "src/sir/sir_code.pyx":12
+  /* "src/sir_code.pyx":12
  * 	void c_synth(int *index, int *nDepth, int *nLambda, double *macroturbulence, double *model, double *stokes)
  * 
  * def init(int index, str file):             # <<<<<<<<<<<<<<
  * 	cdef:
  * 		int nLambda
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_5hazel_5codes_8sir_code_1init, NULL, __pyx_n_s_hazel_codes_sir_code); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_5sir3d_8sir_code_1init, NULL, __pyx_n_s_sir3d_sir_code); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_init, __pyx_t_2) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "src/sir/sir_code.pyx":23
+  /* "src/sir_code.pyx":23
  * 	return nLambda
  * 
  * def setPSF(ar[float, ndim=1] xPSF, ar[float, ndim=1] yPSF):             # <<<<<<<<<<<<<<
  * 	cdef:
  * 		int nLambdaPSF = xPSF.shape[0]
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_5hazel_5codes_8sir_code_3setPSF, NULL, __pyx_n_s_hazel_codes_sir_code); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_5sir3d_8sir_code_3setPSF, NULL, __pyx_n_s_sir3d_sir_code); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_setPSF, __pyx_t_2) < 0) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "src/sir/sir_code.pyx":31
+  /* "src/sir_code.pyx":31
  * 	return
  * 
  * def synth(int index, int nLambda, ar[double, ndim=1] log_tau, ar[double, ndim=1] T, ar[double, ndim=1] Pe, ar[double, ndim=1] vmic,             # <<<<<<<<<<<<<<
  * 	ar[double, ndim=1] vlos, ar[double, ndim=1] Bx, ar[double, ndim=1] By, ar[double, ndim=1] Bz,
  * 	double macroturbulence):
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_5hazel_5codes_8sir_code_5synth, NULL, __pyx_n_s_hazel_codes_sir_code); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_5sir3d_8sir_code_5synth, NULL, __pyx_n_s_sir3d_sir_code); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_synth, __pyx_t_2) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "src/sir/sir_code.pyx":52
+  /* "src/sir_code.pyx":52
  * 	return stokes
  * 
  * def synthRF(int index, int nLambda, ar[float, ndim=1] log_tau, ar[float, ndim=1] T, ar[float, ndim=1] Pe, ar[float, ndim=1] vmic,             # <<<<<<<<<<<<<<
  * 	ar[float, ndim=1] vlos, ar[float, ndim=1] Bx, ar[float, ndim=1] By, ar[float, ndim=1] Bz,
  * 	float macroturbulence):
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_5hazel_5codes_8sir_code_7synthRF, NULL, __pyx_n_s_hazel_codes_sir_code); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_5sir3d_8sir_code_7synthRF, NULL, __pyx_n_s_sir3d_sir_code); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_synthRF, __pyx_t_2) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "src/sir/sir_code.pyx":1
+  /* "src/sir_code.pyx":1
  * from numpy cimport ndarray as ar             # <<<<<<<<<<<<<<
  * from numpy import empty, ascontiguousarray
  * import numpy as np
@@ -7634,11 +7634,11 @@ static int __pyx_pymod_exec_sir_code(PyObject *__pyx_pyinit_module)
   __Pyx_XDECREF(__pyx_t_2);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init hazel.codes.sir_code", 0, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init sir3d.sir_code", 0, __pyx_lineno, __pyx_filename);
     }
     Py_DECREF(__pyx_m); __pyx_m = 0;
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init hazel.codes.sir_code");
+    PyErr_SetString(PyExc_ImportError, "init sir3d.sir_code");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

@@ -57,34 +57,33 @@ class PSF(object):
 
         self.zoom_factor = zoom_factor
 
+        self.f_output_spatial_model = output_spatial_model
+        self.f_output_spatial_stokes = output_spatial_stokes
+        self.f_output_full_stokes = output_spatial_spectral_stokes
+
         if (self.rank == 0):
             
-            self.input_stokes = h5py.File(input_stokes, 'r')
-            self.input_cube = h5py.File(input_model, 'r')
+            print("Reading cube in memory", flush=True)
+            f = h5py.File(input_stokes, 'r')
+            self.input_stokes = f['stokes'][:]
+            self.input_lambda = f['lambda'][:]
+            f.close()            
+
+            f = h5py.File(input_model, 'r')
+            self.input_model = f['model'][:]            
+            f.close()
             
-            self.output_spatial_stokes = h5py.File(output_spatial_stokes, 'w')
-            self.output_spatial_model = h5py.File(output_spatial_model, 'w')
+            self.nx, self.ny, self.n_stokes, self.n_lambda = self.input_stokes.shape
+            self.nx, self.ny, self.n_var, self.n_tau = self.input_model.shape
 
-            self.output_full_stokes = h5py.File(output_spatial_spectral_stokes, 'w')
+            self.nx_new = np.round(self.zoom_factor * self.nx).astype('int')
+            self.ny_new = np.round(self.zoom_factor * self.ny).astype('int')
 
-            self.nx, self.ny, self.n_stokes, self.n_lambda = self.input_stokes['stokes'].shape
-            self.nx, self.ny, self.n_var, self.n_tau = self.input_cube['model'].shape
-
-            self.nx_new = np.round(self.zoom_factor * self.nx)
-            self.ny_new = np.round(self.zoom_factor * self.ny)
-
-            self.stokes_spatial = self.output_spatial_stokes.create_dataset('stokes', (self.nx_new, self.ny_new, self.n_stokes, self.n_lambda))
-            self.lambda_spatial = self.output_spatial_stokes.create_dataset('lambda', (self.n_lambda,))
-            self.model_spatial = self.output_spatial_model.create_dataset('model', (self.n_var, self.n_tau, self.nx_new, self.ny_new))
-            
-            self.stokes_full = self.output_full_stokes.create_dataset('stokes', (self.nx_new, self.ny_new, self.n_stokes, self.n_lambda_new))
-            self.lambda_full = self.output_full_stokes.create_dataset('lambda', (self.n_lambda_new,))
             
             self.spatial_psf = spatial_psf
             self.spectral_psf = spectral_psf
             self.zoom_factor = zoom_factor
 
-            self.lambda_spatial[:] = self.input_stokes['lambda']
     
             if (not self.zoom_factor):
                 self.zoom_factor = 1.0    
@@ -92,26 +91,29 @@ class PSF(object):
 
             # Spatial PSF
             if (self.spatial_psf is not None):
-                print("Reading spatial PSF")
+                print("Reading spatial PSF", flush=True)
                 psf_size = self.spatial_psf.shape[0]
 
                 psf = np.zeros((self.nx, self.ny))
                 psf[int(self.nx/2.-psf_size/2.+1):int(self.nx/2.+psf_size/2.+1),int(self.ny/2.-psf_size/2.+1):int(self.ny/2.+psf_size/2.+1)] = self.spatial_psf
 
                 psf = np.fft.fftshift(psf)
-                self.psf_spatial_fft = np.fft.fft2(psf)
+                self.psf_spatial_fft = fft.numpy_fft.fft2(psf)
 
             # Spectral PSF
             if (self.spectral_psf is not None):
+                print("Reading spectral PSF", flush=True)
                 interpolator = scipy.interpolate.interp1d(spectral_psf[:,0], spectral_psf[:,1], bounds_error=False, fill_value=0.0)
-                psf_spectral = interpolator(self.input_stokes['lambda'])
+                psf_spectral = interpolator(self.input_lambda - np.mean(self.input_lambda))
 
-                self.psf_spectral_fft = np.fft.fft(psf_spectral)
+                psf = np.fft.fftshift(psf_spectral)
+
+                self.psf_spectral_fft = fft.numpy_fft.fft(psf)
                 
-                ind = np.searchsorted(self.input_stokes['lambda'], self.lambda_final)
+                ind = np.searchsorted(self.input_lambda, self.lambda_final)
 
-                self.delta1 = (self.input_stokes['lambda'][:][ind+1] - self.lambda_final) / (self.input_stokes['lambda'][:][ind+1] - self.input_stokes['lambda'][:][ind])
-                self.delta2 = (self.lambda_final - self.input_stokes['lambda'][:][ind]) / (self.input_stokes['lambda'][:][ind+1] - self.input_stokes['lambda'][:][ind])
+                self.delta1 = (self.input_lambda[ind+1] - self.lambda_final) / (self.input_lambda[ind+1] - self.input_lambda[ind])
+                self.delta2 = (self.lambda_final - self.input_lambda[ind]) / (self.input_lambda[ind+1] - self.input_lambda[ind])
 
                 self.ind = ind
 
@@ -123,6 +125,7 @@ class PSF(object):
 
     def broadcast(self):
         if (self.rank == 0):            
+            print("Broadcasting...", flush=True)
             self.comm.Barrier()
             self.comm.bcast(self.psf_spatial_fft, root=0)
             self.comm.bcast(self.psf_spectral_fft, root=0)
@@ -130,7 +133,8 @@ class PSF(object):
             self.comm.bcast(self.delta2, root=0)
             self.comm.bcast(self.ind, root=0)
             self.comm.bcast(self.n_lambda_new, root=0)
-            self.comm.Barrier()                
+            self.comm.Barrier()
+            print("End broadcasting...", flush=True)
         else:
             self.comm.Barrier()
             self.psf_spatial_fft = self.comm.bcast(None, root=0)
@@ -141,7 +145,7 @@ class PSF(object):
             self.n_lambda_new = self.comm.bcast(None, root=0)
             self.comm.Barrier()
                                                     
-    def mpi_master_work(self, rangex, rangey):
+    def mpi_master_work_spatial(self, rangex, rangey):
         """
         MPI master work
 
@@ -153,51 +157,88 @@ class PSF(object):
         -------
         None
         """
-    
+
+
+        self.output_spatial_stokes = h5py.File(self.f_output_spatial_stokes, 'w')
+        self.output_spatial_model = h5py.File(self.f_output_spatial_model, 'w')
+        
+        self.stokes_spatial = self.output_spatial_stokes.create_dataset('stokes', (self.nx_new, self.ny_new, self.n_stokes, self.n_lambda))
+        self.lambda_spatial = self.output_spatial_stokes.create_dataset('lambda', (self.n_lambda,))
+        self.lambda_spatial[:] = self.input_lambda
+        self.model_spatial = self.output_spatial_model.create_dataset('model', (self.nx_new, self.ny_new, self.n_var, self.n_tau))
+                
+        tmp = np.zeros((self.nx_new, self.ny_new, self.n_stokes, self.n_lambda))
+
         # The spatial smearing is done by the master because it is fast
         for i in trange(self.n_stokes, desc='stokes'):
             for j in trange(self.n_lambda, desc='lambda', leave=False):
 
                 if (self.spectral_psf is not None):
-                    print('fft1', flush=True)
-                    im_fft = fft.numpy_fft.fft2(self.input_stokes['stokes'][:,:,i,j])
-                    print('fft2', flush=True)
+                    im_fft = fft.numpy_fft.fft2(self.input_stokes[:,:,i,j])
                     im_conv = np.real(fft.numpy_fft.ifft2(self.psf_spatial_fft * im_fft))
-                    print('fft3', flush=True)
                 else:
-                    im_conv = np.copy(self.input_stokes['stokes'][:,:,i,j])
+                    im_conv = np.copy(self.input_stokes[:,:,i,j])
 
                 if (self.zoom_factor != 1.0):
-                    print('hey1', flush=True)
-                    im_final = skimage.transform.rescale(im_conv, scale=[self.zoom_factor, self.zoom_factor], order=1)
-                    print('hey2', flush=True)
+                    minim, maxim = np.min(im_conv), np.max(im_conv)
+                    im_final = skimage.transform.rescale((im_conv - minim)/(maxim-minim), scale=[self.zoom_factor, self.zoom_factor], order=1)
+                    im_final = im_final * (maxim - minim) + minim
                 else:
                     im_final = np.copy(im_conv)
 
-                # stop()
+                tmp[:,:,i,j] = im_final
 
-                self.stokes_spatial[:,:,i,j] = im_final
+        self.stokes_spatial[:] = tmp
+
+        tmp = np.zeros((self.nx_new, self.ny_new, self.n_var, self.n_tau))
 
         for i in trange(self.n_var, desc='variable'):
             for j in trange(self.n_tau, desc='nz', leave=False):
-                im = self.input_model['cube'][:,:,i,j]
+                im = self.input_model[:,:,i,j]
 
                 if (self.zoom_factor != 1.0):
-                    # im_final = nd.zoom(im, [zoom_factor, zoom_factor])
-                    im_final = skimage.transform.rescale(im, scale=[self.zoom_factor, self.zoom_factor])
+                    # im_final = nd.zoom(im, [zoom_factor, zoom_factor])                    
+                    minim, maxim = np.min(im), np.max(im)
+                    im_final = skimage.transform.rescale((im - minim)/(maxim-minim), scale=[self.zoom_factor, self.zoom_factor], order=1)
+                    im_final = im_final * (maxim - minim) + minim
                 else:
                     im_final = np.copy(im)
 
-                self.model_spatial[:,:,i,j] = im_final
+                tmp[:,:,i,j] = im_final
 
+        self.model_spatial[:] = tmp
 
+        print("Saving files...", flush=True)
         self.output_spatial_stokes.close()
         self.output_spatial_model.close()
 
-        return
+        del tmp
+
+
+    def mpi_master_work_spectral(self, rangex, rangey):
+        """
+        MPI master work
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+
+        print("Reading degraded cube in memory", flush=True)
+        f = h5py.File(self.f_output_spatial_stokes, 'r')
+        self.stokes_spatial = f['stokes'][:]
+        f.close()
+
+        self.output_full_stokes = h5py.File(self.f_output_full_stokes, 'w')
+        self.stokes_full = self.output_full_stokes.create_dataset('stokes', (self.nx_new, self.ny_new, self.n_stokes, self.n_lambda_new))
+        self.lambda_full = self.output_full_stokes.create_dataset('lambda', (self.n_lambda_new,))
 
         x = np.arange(self.nx_new)
-        y = np.arange(self.nz_new)
+        y = np.arange(self.ny_new)
 
         self.n_pixels = len(x) * len(y)
 
@@ -215,7 +256,8 @@ class PSF(object):
         closed_workers = 0
         self.last_received = 0
         self.last_sent = 0            
-        
+
+        tmp = np.zeros((self.nx_new, self.ny_new, self.n_stokes, self.n_lambda_new))        
 
         with tqdm(total=self.n_batches, ncols=140) as pbar:
             while (closed_workers < num_workers):
@@ -231,7 +273,7 @@ class PSF(object):
                         iy = divY[task_index]
                         data_to_send = {'index': task_index, 'indX': ix, 'indY': iy}
 
-                        data_to_send['model'] = self.stokes_spatial[ix,iy,:,:]
+                        data_to_send['stokes'] = self.stokes_spatial[ix,iy,:,:]
                                                                     
                         self.comm.send(data_to_send, dest=source, tag=tags.START)
                     
@@ -250,7 +292,7 @@ class PSF(object):
                     indY = data_received['indY']
                     
                     for i in range(len(indX)):
-                        self.stokes_full[indX[i],indY[i],:,:] = stokes[i,:,:]
+                        tmp[indX[i],indY[i],:,:] = stokes[i,:,:]
                                                     
                     self.last_received = '{0}->{1}'.format(index, source)
                     pbar.set_postfix(sent=self.last_sent, received=self.last_received)
@@ -259,10 +301,12 @@ class PSF(object):
                     closed_workers += 1
 
 
+        self.stokes_full[:] = tmp
+        self.lambda_full[:] = self.lambda_final
         self.output_full_stokes.close()
 
 
-    def mpi_agents_work(self):
+    def mpi_agents_work_spectral(self):
         """
         MPI agents work
 
@@ -285,23 +329,24 @@ class PSF(object):
                 task_index = data_received['index']
                 indX = data_received['indX']
                 indY = data_received['indY']
+                stokes = data_received['stokes']
                 
                 data_to_send = {'index': task_index, 'indX': indX, 'indY': indY}
 
                 n = len(indX)
 
-                stokes = np.zeros((4,self.n_lambda_new,n))
+                stokes_out = np.zeros((n,4,self.n_lambda_new))
 
-                for i in len(indX):
+                for i in range(4):
                     # Compute the convolution using FFT along the wavelength axis
-                    f_im = np.fft.fft(f['stokes'][i,:,:], axis=1)
+                    f_im = fft.numpy_fft.fft(stokes[:,i,:], axis=1)
                     
-                    tmp = np.real(np.fft.ifft(f_im * self.psf_spectral_fft[None,:], axis=1))
+                    tmp = np.real(fft.numpy_fft.ifft(f_im * self.psf_spectral_fft[None,:], axis=1))
 
                     # Finally carry out the linear interpolation along the wavelength axis to rebin to the Hinode wavelength axis
-                    stokes[i,:,:] = tmp[:,self.ind] * delta1[None,:] + tmp[:,self.ind+1] * delta2[None,:]
+                    stokes_out[:,i,:] = tmp[:,self.ind] * self.delta1[None,:] + tmp[:,self.ind+1] * self.delta2[None,:]
                 
-                data_to_send['stokes'] = stokes
+                data_to_send['stokes'] = stokes_out
                 
                 self.comm.send(data_to_send, dest=0, tag=tags.DONE)
             elif tag == tags.EXIT:
@@ -323,8 +368,13 @@ class PSF(object):
         """
         if (self.use_mpi):
             if (self.rank == 0):
-                self.mpi_master_work(rangex=rangex, rangey=rangey)
+                self.broadcast()
+                self.mpi_master_work_spatial(rangex=rangex, rangey=rangey)
+                self.mpi_master_work_spectral(rangex=rangex, rangey=rangey)
             else:
-                self.mpi_agents_work()
+                self.broadcast()
+                # self.mpi_agents_work_spatial()
+                self.mpi_agents_work_spectral()
         else:
+            
             self.nonmpi_work(rangex=rangex, rangey=rangey)

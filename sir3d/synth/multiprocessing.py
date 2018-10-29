@@ -192,14 +192,14 @@ class Iterator(object):
             divY = np.array_split(Y, self.n_batches)
     
         self.f_stokes_out = h5py.File(self.model.output_file, 'w')
-        self.stokes_db = self.f_stokes_out.create_dataset('stokes', (4, self.model.n_lambda_sir, self.model.nx, self.model.nz))
+        self.stokes_db = self.f_stokes_out.create_dataset('stokes', (self.model.nx, self.model.nz, 4, self.model.n_lambda_sir))
         self.lambda_db = self.f_stokes_out.create_dataset('lambda', (self.model.n_lambda_sir,))
 
         # If we want to extract a model sampled at selected taus
         interpolate_model = False
         if (self.model.interpolated_model_filename is not None):
             self.f_model_out = h5py.File(self.model.interpolated_model_filename, 'w')
-            self.model_db = self.f_model_out.create_dataset('model', (7, self.model.n_tau, self.model.nx, self.model.nz))
+            self.model_db = self.f_model_out.create_dataset('model', (self.model.nx, self.model.nz,7, self.model.n_tau))
             interpolate_model = True
                 
         
@@ -217,7 +217,7 @@ class Iterator(object):
                 data_received = self.comm.recv(source=MPI.ANY_SOURCE, tag=MPI.ANY_TAG, status=self.status)
                 source = self.status.Get_source()
                 tag = self.status.Get_tag()
-            
+
                 if tag == tags.READY:
                     # Worker is ready, send a task
                     if (task_index < self.n_batches):
@@ -239,7 +239,7 @@ class Iterator(object):
                     
                         task_index += 1
                         pbar.update(1)
-                        self.last_sent = '{0}->{1}'.format(task_index, source)
+                        self.last_sent = '{0} to {1}'.format(task_index, source)
                         pbar.set_postfix(sent=self.last_sent, received=self.last_received)
 
                     else:
@@ -254,12 +254,12 @@ class Iterator(object):
                     if (interpolate_model):
                         model = data_received['model']
                         for i in range(len(indX)):
-                            self.model_db[:,:,indX[i],indY[i]] = model[i,:,:]
+                            self.model_db[indX[i],indY[i],:,:] = model[i,:,:]
                     
                     for i in range(len(indX)):
-                        self.stokes_db[:,:,indX[i],indY[i]] = stokes[i,1:,:]
+                        self.stokes_db[indX[i],indY[i],:,:] = stokes[i,1:,:]
                                                     
-                    self.last_received = '{0}->{1}'.format(index, source)
+                    self.last_received = '{0} from {1}'.format(index, source)
                     pbar.set_postfix(sent=self.last_sent, received=self.last_received)
 
                 elif tag == tags.EXIT:                    

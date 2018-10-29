@@ -3,4 +3,5 @@ __author__ = "Andres Asensio Ramos"
 
 from . import sir_code
 from .configuration import *
-from .psf import *
+from . import psf
+from . import synth

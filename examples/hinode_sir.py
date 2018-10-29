@@ -3,13 +3,13 @@ import sir3d
 from astropy.io import fits
 
 # Rempel
-input_stokes = '/scratch1/3dcubes/rempel_stokes.h5'
-input_model = '/scratch1/3dcubes/rempel_model.h5'
+input_stokes = '/scratch1/3dcubes/rempel_stokes_sir.h5'
+input_model = '/scratch1/3dcubes/rempel_model_sir.h5'
 
-output_spatial_stokes = '/scratch1/3dcubes/rempel_stokes_spat_degraded.h5'
-output_spatial_model = '/scratch1/3dcubes/rempel_model_spat_degraded.h5'
+output_spatial_stokes = '/scratch1/3dcubes/rempel_stokes_spat_degraded_sir.h5'
+output_spatial_model = '/scratch1/3dcubes/rempel_model_spat_degraded_sir.h5'
 
-output_spatial_spectral_stokes = '/scratch1/3dcubes/rempel_stokes_spat_spec_degraded.h5'
+output_spatial_spectral_stokes = '/scratch1/3dcubes/rempel_stokes_spat_spec_degraded_sir.h5'
 
 tmp = fits.open('hinode_psf_size_256_def_-0.32.fits')
 psf_spatial = tmp[0].data[0:-1,0:-1]
@@ -24,15 +24,20 @@ hinode_pixel = 0.16 * 725.
 simulation_pixel = 48.0
 zoom = simulation_pixel / hinode_pixel
 
+tmp = sir3d.psf.PSF(input_stokes, input_model, output_spatial_stokes, output_spatial_model, output_spatial_spectral_stokes,
+    spatial_psf=psf_spatial, spectral_psf=psf_spectral, final_wavelength_axis=lambda_hinode, zoom_factor=zoom, batch=256)
+
+tmp.run_all_pixels()
+
 
 # Rempel invert
-input_stokes = '/scratch1/3dcubes/rempel_stokes_invert.h5'
-input_model = '/scratch1/3dcubes/rempel_model_invert.h5'
+input_stokes = '/scratch1/3dcubes/rempel_stokes_invert_sir.h5'
+input_model = '/scratch1/3dcubes/rempel_model_invert_sir.h5'
 
-output_spatial_stokes = '/scratch1/3dcubes/rempel_stokes_invert_spat_degraded.h5'
-output_spatial_model = '/scratch1/3dcubes/rempel_model_invert_spat_degraded.h5'
+output_spatial_stokes = '/scratch1/3dcubes/rempel_stokes_invert_spat_degraded_sir.h5'
+output_spatial_model = '/scratch1/3dcubes/rempel_model_invert_spat_degraded_sir.h5'
 
-output_spatial_spectral_stokes = '/scratch1/3dcubes/rempel_stokes_invert_spat_spec_degraded.h5'
+output_spatial_spectral_stokes = '/scratch1/3dcubes/rempel_stokes_invert_spat_spec_degraded_sir.h5'
 
 tmp = fits.open('hinode_psf_size_256_def_-0.32.fits')
 psf_spatial = tmp[0].data[0:-1,0:-1]
