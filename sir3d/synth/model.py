@@ -7,6 +7,7 @@ import scipy.stats
 import logging
 import h5py
 import scipy.integrate as integ
+from scipy import interpolate
 
 # from ipdb import set_trace as stop
 
@@ -42,7 +43,7 @@ class Model(object):
 
                 self.logger.info('Reading EOS - MANCHA')
 
-                filename = os.path.join(os.path.dirname(__file__), 'data/eos.h5')
+                filename = os.path.join(os.path.dirname(__file__), 'data/eos_mancha.h5')
                 f = h5py.File(filename, 'r')
                 self.T_eos = np.log10(f['T'][:])
                 self.P_eos = np.log10(f['P'][:])
@@ -61,7 +62,7 @@ class Model(object):
 
                 self.kappa = np.zeros((56,21))
 
-                filename = os.path.join(os.path.dirname(__file__), 'data/kappa.5000.dat')
+                filename = os.path.join(os.path.dirname(__file__), 'data/kappa5000_mancha.dat')
                 f = open(filename, 'r')
                         
                 for it in range(56):
@@ -72,24 +73,18 @@ class Model(object):
 
             else:
 
-                self.logger.info('Reading EOS - SIR')
+                self.logger.info('Reading EOS and kappa5000 - SIR')
 
-                filename = os.path.join(os.path.dirname(__file__), 'data/eos_witt.h5')
+                filename = os.path.join(os.path.dirname(__file__), 'data/kappa5000_eos_sir.h5')
                 f = h5py.File(filename, 'r')
                 self.T_eos = np.log10(f['T'][:])
                 self.P_eos = np.log10(f['P'][:])
-                self.Pe_eos = np.log10(f['Pel'][:])
-                f.close()
-                
-                self.logger.info('Reading kappa5000 - SIR')
-                
-                filename = os.path.join(os.path.dirname(__file__), 'data/lambda5000_witt.h5')
-                f = h5py.File(filename, 'r')
+                self.Pe_eos = np.log10(f['Pe'][:])
+                                
                 self.T_kappa5 = np.log10(f['T'][:])
                 self.P_kappa5 = np.log10(f['P'][:])
                 self.kappa = f['kappa5000'][:]
                 f.close()
-
         
     def __getstate__(self):
         d = self.__dict__.copy()
@@ -171,6 +166,12 @@ class Model(object):
                 self.logger.info(' - Bx file : {0}'.format(self.Bx_file))
                 self.logger.info(' - By file : {0}'.format(self.By_file))
                 self.logger.info(' - Bz file : {0}'.format(self.Bz_file))
+
+                if ('tau delta' in config_dict['atmosphere']):                    
+                    self.tau_fine = float(config_dict['atmosphere']['tau delta'])
+                    self.logger.info(' - tau axis will be interpolated to have delta={0}'.format(self.tau_fine))
+                else:
+                    self.tau_fine = 0.0
 
 
                 self.zeros = np.zeros(self.ny)                                            
@@ -258,6 +259,10 @@ class Model(object):
         filename = os.path.join(os.path.dirname(__file__),'data/LINEAS')
         self.n_lambda_sir = sir_code.init(1, filename)
 
+    def intpltau(self, newtau, oldtau, var):
+        fX = interpolate.interp1d(oldtau, var)
+        return fX(newtau)
+
     def synth(self, T, P, rho, vz, Bx, By, Bz, interpolate_model=False):
 
         # Get ltau500 axis
@@ -299,8 +304,17 @@ class Model(object):
 
         log_Pe /= ((self.T_eos[it1] - self.T_eos[it0]) * (self.P_eos[ip1] - self.P_eos[ip0]))
 
-        stokes = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[ind], 10**log_Pe[ind], self.zeros[ind], vz[ind], 
-            self.bx_multiplier*Bx[ind], self.by_multiplier*By[ind], self.bz_multiplier*Bz[ind], self.macroturbulence)        
+        if (self.tau_fine != 0.0):
+            taufino = np.arange(np.min(ltau[ind]), np.max(ltau[ind]), self.tau_fine)[::-1]
+            stokes = sir_code.synth(1, self.n_lambda_sir, taufino, self.intpltau(taufino, ltau[ind], T[ind]),
+                self.intpltau(taufino, ltau[ind], 10**log_Pe[ind]), self.intpltau(taufino, ltau[ind], self.zeros[ind]), 
+                self.intpltau(taufino, ltau[ind], vz[ind]), self.intpltau(taufino, ltau[ind], self.bx_multiplier*Bx[ind]),
+                self.intpltau(taufino, ltau[ind], self.by_multiplier*By[ind]), self.intpltau(taufino, ltau[ind], self.bz_multiplier*Bz[ind]), self.macroturbulence)
+
+        else:
+
+            stokes = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[ind], 10**log_Pe[ind], self.zeros[ind], vz[ind], 
+                self.bx_multiplier*Bx[ind], self.by_multiplier*By[ind], self.bz_multiplier*Bz[ind], self.macroturbulence)        
 
         # We want to interpolate the model to certain isotau surfaces
         if (interpolate_model):
@@ -368,8 +382,15 @@ class Model(object):
 
             log_Pe /= ((self.T_eos[it1] - self.T_eos[it0]) * (self.P_eos[ip1] - self.P_eos[ip0]))
 
-            stokes_out[loop,:,:] = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[loop,ind], 10**log_Pe[ind], self.zeros[ind], 
-                vz[loop,ind], self.bx_multiplier*Bx[loop,ind], self.by_multiplier*By[loop,ind], self.bz_multiplier*Bz[loop,ind], self.macroturbulence)
+            if (self.tau_fine != 0.0):
+                taufino = np.arange(np.min(ltau[ind]), np.max(ltau[ind]), self.tau_fine)[::-1]
+                stokes_out[loop,:,:] = sir_code.synth(1, self.n_lambda_sir, taufino, self.intpltau(taufino, ltau[ind], T[loop,ind]),
+                    self.intpltau(taufino, ltau[ind], 10**log_Pe[ind]), self.intpltau(taufino, ltau[ind], self.zeros[ind]), 
+                    self.intpltau(taufino, ltau[ind], vz[loop,ind]), self.intpltau(taufino, ltau[ind], self.bx_multiplier*Bx[loop,ind]),
+                    self.intpltau(taufino, ltau[ind], self.by_multiplier*By[loop,ind]), self.intpltau(taufino, ltau[ind], self.bz_multiplier*Bz[loop,ind]), self.macroturbulence)
+            else:
+                stokes_out[loop,:,:] = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[loop,ind], 10**log_Pe[ind], self.zeros[ind], 
+                    vz[loop,ind], self.bx_multiplier*Bx[loop,ind], self.by_multiplier*By[loop,ind], self.bz_multiplier*Bz[loop,ind], self.macroturbulence)
 
             # We want to interpolate the model to certain isotau surfaces
             if (interpolate_model):

@@ -78,16 +78,13 @@ class PSF(object):
 
             self.nx_new = np.round(self.zoom_factor * self.nx).astype('int')
             self.ny_new = np.round(self.zoom_factor * self.ny).astype('int')
-
             
             self.spatial_psf = spatial_psf
             self.spectral_psf = spectral_psf
             self.zoom_factor = zoom_factor
-
     
             if (not self.zoom_factor):
                 self.zoom_factor = 1.0    
-
 
             # Spatial PSF
             if (self.spatial_psf is not None):
@@ -116,6 +113,8 @@ class PSF(object):
                 self.delta2 = (self.lambda_final - self.input_lambda[ind]) / (self.input_lambda[ind+1] - self.input_lambda[ind])
 
                 self.ind = ind
+        
+        self.broadcast()
 
     def get_rank(self, n_agents=0):        
         if (self.use_mpi):
@@ -354,7 +353,7 @@ class PSF(object):
 
         self.comm.send(None, dest=0, tag=tags.EXIT)           
 
-    def run_all_pixels(self, rangex=None, rangey=None):
+    def run_all_pixels_spatial(self, rangex=None, rangey=None):
         """
         Run synthesis/inversion for all pixels
 
@@ -367,13 +366,30 @@ class PSF(object):
         None
         """
         if (self.use_mpi):
-            if (self.rank == 0):
-                self.broadcast()
-                self.mpi_master_work_spatial(rangex=rangex, rangey=rangey)
-                self.mpi_master_work_spectral(rangex=rangex, rangey=rangey)
+            if (self.rank == 0):                
+                self.mpi_master_work_spatial(rangex=rangex, rangey=rangey)                
             else:
-                self.broadcast()
-                # self.mpi_agents_work_spatial()
+                pass
+        else:
+            
+            self.nonmpi_work(rangex=rangex, rangey=rangey)
+
+    def run_all_pixels_spectral(self, rangex=None, rangey=None):
+        """
+        Run synthesis/inversion for all pixels
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+        if (self.use_mpi):
+            if (self.rank == 0):                
+                self.mpi_master_work_spectral(rangex=rangex, rangey=rangey)
+            else:                
                 self.mpi_agents_work_spectral()
         else:
             
