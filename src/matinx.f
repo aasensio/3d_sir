@@ -8,6 +8,10 @@ c	'exact' inversion of 4 X 4 matrix
 c      dimension c(4,4)
       integer i , j
 
+      integer :: error_code
+      common/Error/error_code
+
+
       absmax = 0.
 
       do 5010 i = 1 , 4
@@ -18,7 +22,11 @@ c          c(i,j)=a(i,j)
 
 c      if ( absmax .eq. 0. ) stop 'singularity problem in matinx'
 
-      if ( absmax .eq. 0. ) call exit(123)
+      if ( absmax .eq. 0. ) then
+            error_code = 2
+            a = 1.0
+            return
+      endif
 
 
       fabsmx = 1.d00 / absmax

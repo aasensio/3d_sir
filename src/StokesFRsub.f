@@ -105,6 +105,9 @@ c para la inclusion de RP en RT
         
 c para hermite
         real*4 deltae(kt),deltai(kt),delt2i(kt)
+
+        integer :: error_code
+        common/Error/error_code
         
 c lugares comunes de memoria
         common/Atmosmodel/atmosmodel,ntau                  !se carga en lee_model.f
@@ -194,7 +197,8 @@ c leemos la atmosfera
               print*,'      Subroutine StokesFRsub: pe(',i,')= ',pe(i)
               print*,' '
               print*,'_______________________________'
-              stop
+              error_code = 3
+              return
            end if
            vtur(i)=atmosmodel(i+3*ntau)
            h(i)=atmosmodel(i+4*ntau)
@@ -238,6 +242,10 @@ c con respecto a la t (dpg) y, con pe (ddpg)
             ts=t(i)
             theta=5040./ts
             call gasb(theta,ps,pg,dpg,ddpg)
+            if (error_code /= 0) then
+               error = error_code
+               return
+            endif 
             do j=1,10
                k=ivar(j)
                pt(i,j)=pg(k)
@@ -950,6 +958,10 @@ c          call lin(bp,dbp,dab,ntau,svec,kt,bt,tk,pk,hk,
 c     &              vk,gk,fk,mk,rt4,rp4,rh4,rv4,rg4,rf4,rm4,mnodos)
            call hermite(bp,dbp,dab,ntau,svec,kt,bt,tk,pk,hk,
      &              vk,gk,fk,mk,rt4,rp4,rh4,rv4,rg4,rf4,rm4,mnodos)
+
+       if (error_code /= 0) then
+          error = error_code
+       endif
 
 c introducimos el paso en tau para pasar la integral sobre las f. resp.
 c a sumatorio y normalizmos por el continuo

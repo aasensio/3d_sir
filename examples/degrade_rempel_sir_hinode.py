@@ -24,10 +24,9 @@ hinode_pixel = 0.16 * 725.
 simulation_pixel = 48.0
 zoom = simulation_pixel / hinode_pixel
 
-tmp = sir3d.psf.PSF(input_stokes, input_model, output_spatial_stokes, output_spatial_model, output_spatial_spectral_stokes,
-    spatial_psf=psf_spatial, spectral_psf=psf_spectral, final_wavelength_axis=lambda_hinode, zoom_factor=zoom, batch=256)
-
-tmp.run_all_pixels()
+tmp = sir3d.psf.PSF(use_mpi=True, batch=256)
+tmp.run_all_pixels_spatial(input_stokes, input_model, output_spatial_stokes, output_spatial_model, spatial_psf=psf_spatial, zoom_factor=zoom)
+tmp.run_all_pixels_spectral(output_spatial_stokes, output_spatial_spectral_stokes, spectral_psf=psf_spectral, final_wavelength_axis=lambda_hinode)
 
 
 # Rempel invert
@@ -52,7 +51,6 @@ hinode_pixel = 0.16 * 725.
 simulation_pixel = 48.0
 zoom = simulation_pixel / hinode_pixel
 
-tmp = sir3d.psf.PSF(input_stokes, input_model, output_spatial_stokes, output_spatial_model, output_spatial_spectral_stokes,
-    spatial_psf=psf_spatial, spectral_psf=psf_spectral, final_wavelength_axis=lambda_hinode, zoom_factor=zoom, batch=256)
-
-tmp.run_all_pixels()
+tmp = sir3d.psf.PSF(use_mpi=True, batch=256)
+tmp.run_all_pixels_spatial(input_stokes, input_model, output_spatial_stokes, output_spatial_model, spatial_psf=psf_spatial, zoom_factor=zoom)
+tmp.run_all_pixels_spectral(output_spatial_stokes, output_spatial_spectral_stokes, spectral_psf=psf_spectral, final_wavelength_axis=lambda_hinode)

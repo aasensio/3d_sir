@@ -118,7 +118,7 @@ class Iterator(object):
             interpolate_model = True
 
         
-        for ix in trange(self.model.nx, desc='x'):            
+        for ix in trange(self.model.nx, desc='x'):
             for iz in trange(self.model.nz, desc='x'):
 
                 if (self.model.vz_type == 'vz'):
