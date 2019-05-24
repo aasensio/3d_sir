@@ -9,7 +9,7 @@ import h5py
 import scipy.integrate as integ
 from scipy import interpolate
 
-from ipdb import set_trace as stop
+# from ipdb import set_trace as stop
 
 __all__ = ['Model']
 
@@ -181,6 +181,7 @@ class Model(object):
                 self.bx_multiplier = 1.0
                 self.by_multiplier = 1.0
                 self.bz_multiplier = 1.0
+                self.vz_multiplier = 1.0
 
                 if ('multipliers' in config_dict['atmosphere']):
 
@@ -195,6 +196,10 @@ class Model(object):
                     if ('bz' in config_dict['atmosphere']['multipliers']):
                         self.bz_multiplier = float(config_dict['atmosphere']['multipliers']['bz'])
                         self.logger.info('Bz multiplier : {0}'.format(self.bz_multiplier))
+
+                    if ('vz' in config_dict['atmosphere']['multipliers']):
+                        self.vz_multiplier = float(config_dict['atmosphere']['multipliers']['vz'])
+                        self.logger.info('vz multiplier : {0}'.format(self.vz_multiplier))
 
                             
     def init_sir(self, spectral):
@@ -260,7 +265,7 @@ class Model(object):
         self.n_lambda_sir = sir_code.init(1, filename)
 
     def intpltau(self, newtau, oldtau, var):
-        fX = interpolate.interp1d(oldtau, var)
+        fX = interpolate.interp1d(oldtau, var, bounds_error=False, fill_value="extrapolate")
         return fX(newtau)
 
     def synth(self, T, P, rho, vz, Bx, By, Bz, interpolate_model=False):
@@ -297,10 +302,17 @@ class Model(object):
         ip0 = np.searchsorted(self.P_eos, log_P) - 1
         ip1 = ip0 + 1
 
-        log_Pe = self.Pe_eos[ip0,it0] * (self.T_eos[it1] - log_T) * (self.P_eos[ip1] - log_P) + \
+        if (self.eos_type == 'MANCHA'):
+            log_Pe = self.Pe_eos[ip0,it0] * (self.T_eos[it1] - log_T) * (self.P_eos[ip1] - log_P) + \
                 self.Pe_eos[ip1,it0] * (log_T - self.T_eos[it0]) * (self.P_eos[ip1] - log_P) + \
                 self.Pe_eos[ip0,it1] * (self.T_eos[it1] - log_T) * (log_P - self.P_eos[ip0]) + \
                 self.Pe_eos[ip1,it1] * (log_T - self.T_eos[it0]) * (log_P - self.P_eos[ip0])
+        else:
+            log_Pe = self.Pe_eos[it0,ip0] * (self.T_eos[it1] - log_T) * (self.P_eos[ip1] - log_P) + \
+                self.Pe_eos[it1,ip0] * (log_T - self.T_eos[it0]) * (self.P_eos[ip1] - log_P) + \
+                self.Pe_eos[it0,ip1] * (self.T_eos[it1] - log_T) * (log_P - self.P_eos[ip0]) + \
+                self.Pe_eos[it1,ip1] * (log_T - self.T_eos[it0]) * (log_P - self.P_eos[ip0])
+
 
         log_Pe /= ((self.T_eos[it1] - self.T_eos[it0]) * (self.P_eos[ip1] - self.P_eos[ip0]))
 
@@ -308,12 +320,12 @@ class Model(object):
             taufino = np.arange(np.min(ltau[ind]), np.max(ltau[ind]), self.tau_fine)[::-1]
             stokes, error = sir_code.synth(1, self.n_lambda_sir, taufino, self.intpltau(taufino, ltau[ind], T[ind]),
                 10**self.intpltau(taufino, ltau[ind], log_Pe[ind]), self.intpltau(taufino, ltau[ind], self.zeros[ind]), 
-                self.intpltau(taufino, ltau[ind], vz[ind]), self.intpltau(taufino, ltau[ind], self.bx_multiplier*Bx[ind]),
+                self.intpltau(taufino, ltau[ind], self.vz_multiplier*vz[ind]), self.intpltau(taufino, ltau[ind], self.bx_multiplier*Bx[ind]),
                 self.intpltau(taufino, ltau[ind], self.by_multiplier*By[ind]), self.intpltau(taufino, ltau[ind], self.bz_multiplier*Bz[ind]), self.macroturbulence)
 
         else:
 
-            stokes, error = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[ind], 10**log_Pe[ind], self.zeros[ind], vz[ind], 
+            stokes, error = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[ind], 10**log_Pe[ind], self.zeros[ind], self.vz_multiplier*vz[ind], 
                 self.bx_multiplier*Bx[ind], self.by_multiplier*By[ind], self.bz_multiplier*Bz[ind], self.macroturbulence)        
 
         if (error != 0):
@@ -326,7 +338,7 @@ class Model(object):
             model[0,:] = self.intpltau(self.interpolated_tau, ltau[::-1], self.deltaz[::-1])
             model[1,:] = self.intpltau(self.interpolated_tau, ltau[::-1], T[::-1])
             model[2,:] = np.exp(self.intpltau(self.interpolated_tau, ltau[::-1], np.log(P[::-1])))
-            model[3,:] = self.intpltau(self.interpolated_tau, ltau[::-1], vz[::-1])
+            model[3,:] = self.intpltau(self.interpolated_tau, ltau[::-1], self.vz_multiplier * vz[::-1])
             model[4,:] = self.intpltau(self.interpolated_tau, ltau[::-1], self.bx_multiplier * Bx[::-1])
             model[5,:] = self.intpltau(self.interpolated_tau, ltau[::-1], self.by_multiplier * By[::-1])
             model[6,:] = self.intpltau(self.interpolated_tau, ltau[::-1], self.bz_multiplier * Bz[::-1])
@@ -395,11 +407,11 @@ class Model(object):
                 taufino = np.arange(np.min(ltau[ind]), np.max(ltau[ind]), self.tau_fine)[::-1]
                 stokes_out[loop,:,:], error = sir_code.synth(1, self.n_lambda_sir, taufino, self.intpltau(taufino, ltau[ind], T[loop,ind]),
                     10**self.intpltau(taufino, ltau[ind], log_Pe[ind]), self.intpltau(taufino, ltau[ind], self.zeros[ind]), 
-                    self.intpltau(taufino, ltau[ind], vz[loop,ind]), self.intpltau(taufino, ltau[ind], self.bx_multiplier*Bx[loop,ind]),
+                    self.intpltau(taufino, ltau[ind], self.vz_multiplier*vz[loop,ind]), self.intpltau(taufino, ltau[ind], self.bx_multiplier*Bx[loop,ind]),
                     self.intpltau(taufino, ltau[ind], self.by_multiplier*By[loop,ind]), self.intpltau(taufino, ltau[ind], self.bz_multiplier*Bz[loop,ind]), self.macroturbulence)
             else:
                 stokes_out[loop,:,:], error = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[loop,ind], 10**log_Pe[ind], self.zeros[ind], 
-                    vz[loop,ind], self.bx_multiplier*Bx[loop,ind], self.by_multiplier*By[loop,ind], self.bz_multiplier*Bz[loop,ind], self.macroturbulence)
+                    self.vz_multiplier*vz[loop,ind], self.bx_multiplier*Bx[loop,ind], self.by_multiplier*By[loop,ind], self.bz_multiplier*Bz[loop,ind], self.macroturbulence)
 
             if (error != 0):
                 stokes_out[loop,:,:] = -99.0
@@ -410,7 +422,7 @@ class Model(object):
                 model_out[loop,0,:] = self.intpltau(self.interpolated_tau, ltau[::-1], self.deltaz[::-1])
                 model_out[loop,1,:] = self.intpltau(self.interpolated_tau, ltau[::-1], T[loop,::-1])
                 model_out[loop,2,:] = np.exp(self.intpltau(self.interpolated_tau, ltau[::-1], np.log(P[loop,::-1])))
-                model_out[loop,3,:] = self.intpltau(self.interpolated_tau, ltau[::-1], vz[loop,::-1])
+                model_out[loop,3,:] = self.intpltau(self.interpolated_tau, ltau[::-1], self.vz_multiplier * vz[loop,::-1])
                 model_out[loop,4,:] = self.intpltau(self.interpolated_tau, ltau[::-1], self.bx_multiplier * Bx[loop,::-1])
                 model_out[loop,5,:] = self.intpltau(self.interpolated_tau, ltau[::-1], self.by_multiplier * By[loop,::-1])
                 model_out[loop,6,:] = self.intpltau(self.interpolated_tau, ltau[::-1], self.bz_multiplier * Bz[loop,::-1])
