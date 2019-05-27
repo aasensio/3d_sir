@@ -73,7 +73,8 @@ class Iterator(object):
                 self.model = self.comm.bcast(model, root=0)
                 self.comm.Barrier()
 
-                self.model.init_sir_agents()
+                # self.model.init_sir_agents()
+                self.model.init_sir(self.model.spectral_regions_dict)
                             
         else:
             self.model = model

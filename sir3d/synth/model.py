@@ -24,6 +24,11 @@ class Model(object):
         self.logger.handlers = []
         self.rank = rank
 
+        filename = os.path.join(os.path.dirname(__file__),'data/LINEAS')
+        ff = open(filename, 'r')
+        self.LINES = ff.readlines()
+        ff.close()
+
         self.macroturbulence = 0.0
 
         ch = logging.StreamHandler()
@@ -131,6 +136,8 @@ class Model(object):
         
         # Add spectral regions
         self.init_sir(config_dict['spectral regions'])
+
+        self.spectral_regions_dict = config_dict['spectral regions']
         
         # Read atmosphere
         if (self.atmosphere_type == 'MURAM'):
@@ -202,9 +209,72 @@ class Model(object):
                         self.logger.info('vz multiplier : {0}'.format(self.vz_multiplier))
 
                             
+    # def init_sir_external(self, spectral):
+    #     """
+    #     Initialize SIR for this synthesis
+        
+    #     Parameters
+    #     ----------
+    #     None
+        
+    #     Returns
+    #     -------
+    #     None
+    
+    #     """
+
+    #     filename = os.path.join(os.path.dirname(__file__),'data/LINEAS')
+    #     ff = open(filename, 'r')
+    #     flines = ff.readlines()
+    #     ff.close()
+        
+            
+    #     f = open('malla.grid', 'w')
+    #     f.write("IMPORTANT: a) All items must be separated by commas.                 \n")
+    #     f.write("           b) The first six characters of the last line                \n")
+    #     f.write("          in the header (if any) must contain the symbol ---       \n")
+    #     f.write("\n")                                                                       
+    #     f.write("Line and blends indices   :   Initial lambda     Step     Final lambda \n")
+    #     f.write("(in this order)                    (mA)          (mA)         (mA)     \n")
+    #     f.write("-----------------------------------------------------------------------\n")
+
+    #     for k, v in spectral.items():            
+    #         self.logger.info('Adding spectral regions {0}'.format(v['name']))
+
+    #         left = float(v['wavelength range'][0])
+    #         right = float(v['wavelength range'][1])
+    #         n_lambda = int(v['n. wavelengths'])
+            
+    #         delta = (right - left) / n_lambda
+
+    #         for i in range(len(v['spectral lines'])):
+    #             for l in flines:
+    #                 tmp = l.split()
+    #                 index = int(tmp[0].split('=')[0])                    
+    #                 if (index == int(v['spectral lines'][0])):
+    #                     wvl = float(tmp[2])
+
+    #         lines = ''
+    #         n_lines = len(v['spectral lines'])
+    #         for i in range(n_lines):
+    #             lines += v['spectral lines'][i]
+    #             if (i != n_lines - 1):
+    #                 lines += ', '
+
+    #         f.write("{0}            :  {1}, {2}, {3}\n".format(lines, 1e3*(left-wvl), 1e3*delta, 1e3*(right-wvl)))
+    #     f.close()
+        
+    #     self.n_lambda_sir = sir_code.init_externalfile(1, filename)
+
+    # def init_sir_agents_external(self):
+
+    #     filename = os.path.join(os.path.dirname(__file__),'data/LINEAS')
+    #     self.n_lambda_sir = sir_code.init_externalfile(1, filename)
+
     def init_sir(self, spectral):
         """
-        Initialize SIR for this synthesis
+        Initialize SIR for this synthesis. This version does not make use of any external file, which might be
+        not safe when running in MPI mode.
         
         Parameters
         ----------
@@ -215,24 +285,24 @@ class Model(object):
         None
     
         """
+        lines = []
+        n_lines = 0
 
-        filename = os.path.join(os.path.dirname(__file__),'data/LINEAS')
-        ff = open(filename, 'r')
-        flines = ff.readlines()
-        ff.close()
-        
-            
-        f = open('malla.grid', 'w')
-        f.write("IMPORTANT: a) All items must be separated by commas.                 \n")
-        f.write("           b) The first six characters of the last line                \n")
-        f.write("          in the header (if any) must contain the symbol ---       \n")
-        f.write("\n")                                                                       
-        f.write("Line and blends indices   :   Initial lambda     Step     Final lambda \n")
-        f.write("(in this order)                    (mA)          (mA)         (mA)     \n")
-        f.write("-----------------------------------------------------------------------\n")
+        elements = {'H':1,'HE':2,'LI':3,'BE':4,'B':5,'C':6,'N':7,'O':8,'F':9,'NE':10,
+            'NA':11,'MG':12,'AL':13,'SI':14,'P':15,'S':16,'CL':17,'AR':18,'K':19,'CA':20,'SC':21,'TI':22,'V':23,'CR':24,
+            'MN':25,'FE':26,'CO':27,'NI':28,'CU':29,'ZN':30,'GA':31,'GE':32,'AS':33,'SE':34,'BR':35,'KR':36,
+            'RB':37,'SR':38,'Y':39,'ZR':40,'NB':41,'MO':42,'TC':43,'RU':44,'RH':45,'PD':46,'AG':47,'CD':48,'IN':49,
+            'SN':50,'SB':51,'TE':52,'I':53,'XE':54,'CS':55,'BA':56,'LA':57,'CE':58,'PR':59,'ND':60,'PM':61,
+            'SM':62,'EU':63,'GD':64,'TB':65,'DY':66,'HO':67,'ER':68,'TM':69,'YB':70,'LU':71,'HF':72,'TA':73,'W':74,
+            'RE':75,'OS':76,'IR':77,'PT':78,'AU':79,'HG':80,'TL':81,'PB':82,'BI':83,'PO':84,'AT':85,'RN':86,
+            'FR':87,'RA':88,'AC':89,'TH':90,'PA':91,'U':92}
+        states = {'S': 0, 'P': 1, 'D': 2, 'F': 3, 'G': 4, 'H': 5, 'I': 6}
 
-        for k, v in spectral.items():            
+        for k, v in spectral.items(): 
+
             self.logger.info('Adding spectral regions {0}'.format(v['name']))
+            
+            n_lines += 1
 
             left = float(v['wavelength range'][0])
             right = float(v['wavelength range'][1])
@@ -240,29 +310,58 @@ class Model(object):
             
             delta = (right - left) / n_lambda
 
-            for i in range(len(v['spectral lines'])):
-                for l in flines:
+            nblend = len(v['spectral lines'])                                    
+            
+            lines = np.zeros(nblend, dtype=np.intc)
+            atom = np.zeros(nblend, dtype=np.intc)
+            istage = np.zeros(nblend, dtype=np.intc)
+            wvl = np.zeros(nblend)
+            zeff = np.zeros(nblend)
+            energy = np.zeros(nblend)
+            loggf = np.zeros(nblend)
+            mult1 = np.zeros(nblend, dtype=np.intc)
+            mult2 = np.zeros(nblend, dtype=np.intc)
+            design1 = np.zeros(nblend, dtype=np.intc)
+            design2 = np.zeros(nblend, dtype=np.intc)
+            tam1 = np.zeros(nblend)
+            tam2 = np.zeros(nblend)
+            alfa = np.zeros(nblend)
+            sigma = np.zeros(nblend)
+            
+            for i in range(nblend):            
+                lines[i] = v['spectral lines'][i]
+                for l in self.LINES:
                     tmp = l.split()
-                    index = int(tmp[0].split('=')[0])                    
-                    if (index == int(v['spectral lines'][0])):
-                        wvl = float(tmp[2])
+                    index = int(tmp[0].split('=')[0])
 
-            lines = ''
-            n_lines = len(v['spectral lines'])
-            for i in range(n_lines):
-                lines += v['spectral lines'][i]
-                if (i != n_lines - 1):
-                    lines += ', '
+                    if (index == int(v['spectral lines'][i])):
+                                                    
+                        atom[i] = elements[tmp[0].split('=')[1]]
+                        istage[i] = tmp[1]
+                        wvl[i] = float(tmp[2])
+                        zeff[i] = float(tmp[3])
+                        energy[i] = float(tmp[4])
+                        loggf[i] = float(tmp[5])
+                        mult1[i] = int(tmp[6][:-1])
+                        mult2[i] = int(tmp[8][:-1])
+                        design1[i] = states[tmp[6][-1]]
+                        design2[i] = states[tmp[8][-1]]
+                        tam1[i] = float(tmp[7].split('-')[0])
+                        tam2[i] = float(tmp[9].split('-')[0])
+                        if (len(tmp) == 12):
+                            alfa[i] = float(tmp[-2])
+                            sigma[i] = float(tmp[-1])
+                        else:
+                            alfa[i] = 0.0
+                            sigma[i] = 0.0
+            
+            lambda0 = 1e3*(left-wvl[0])
+            lambda1 = 1e3*(right-wvl[0])
 
-            f.write("{0}            :  {1}, {2}, {3}\n".format(lines, 1e3*(left-wvl), 1e3*delta, 1e3*(right-wvl)))
-            f.close()
-        
-        self.n_lambda_sir = sir_code.init(1, filename)
-
-    def init_sir_agents(self):
-
-        filename = os.path.join(os.path.dirname(__file__),'data/LINEAS')
-        self.n_lambda_sir = sir_code.init(1, filename)
+            sir_code.init(n_lines, nblend, lines, atom, istage, wvl, zeff, energy, loggf,
+                mult1, mult2, design1, design2, tam1, tam2, alfa, sigma, lambda0, lambda1, n_lambda)
+                
+        self.n_lambda_sir = n_lambda
 
     def intpltau(self, newtau, oldtau, var):
         fX = interpolate.interp1d(oldtau, var, bounds_error=False, fill_value="extrapolate")

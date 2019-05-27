@@ -7,16 +7,6 @@ iterator = sir3d.synth.Iterator(use_mpi=True, batch=256)
 mod = sir3d.synth.Model('rempel.ini', rank=iterator.get_rank())
 iterator.use_model(model=mod)
 
-# iterator.run_all_pixels(rangex=[0,100], rangey=[0,100])
-iterator.run_all_pixels()
+iterator.run_all_pixels(rangex=[0,50], rangey=[0,50])
+#iterator.run_all_pixels()
 
-del iterator
-del mod
-
-iterator = sir3d.synth.Iterator(use_mpi=True, batch=256)
-
-mod = sir3d.synth.Model('rempel_invert.ini', rank=iterator.get_rank())
-iterator.use_model(model=mod)
-
-# iterator.run_all_pixels(rangex=[0,100], rangey=[0,100])
-iterator.run_all_pixels()
