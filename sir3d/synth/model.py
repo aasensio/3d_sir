@@ -147,6 +147,7 @@ class Model(object):
                 self.model_shape = tuple([int(k) for k in config_dict['atmosphere']['dimensions']])
                 self.nx, self.ny, self.nz = self.model_shape
                 self.deltaz = float(config_dict['atmosphere']['deltaz']) * np.arange(self.ny)
+                self.deltaxy = float(config_dict['atmosphere']['deltaxy'])
                 self.T_file = config_dict['atmosphere']['temperature']
                 self.logger.info(' - T file : {0}'.format(self.T_file))
 
@@ -167,6 +168,17 @@ class Model(object):
                 else:
                     raise Exception("You need to provide either vz or rho_vz")
 
+                if ('vx' in config_dict['atmosphere']):
+                    self.vx_file = config_dict['atmosphere']['vx']
+                    self.logger.info(' - vx file : {0}'.format(self.vx_file))
+                else:
+                    self.vx_file = None
+                if ('vy' in config_dict['atmosphere']):
+                    self.vy_file = config_dict['atmosphere']['vy']
+                    self.logger.info(' - vy file : {0}'.format(self.vy_file))
+                else:
+                    self.vy_file = None
+
                 self.Bx_file = config_dict['atmosphere']['bx']
                 self.By_file = config_dict['atmosphere']['by']
                 self.Bz_file = config_dict['atmosphere']['bz']
@@ -174,12 +186,40 @@ class Model(object):
                 self.logger.info(' - By file : {0}'.format(self.By_file))
                 self.logger.info(' - Bz file : {0}'.format(self.Bz_file))
 
-                if ('tau delta' in config_dict['atmosphere']):                    
+                if ('tau delta' in config_dict['atmosphere']):
                     self.tau_fine = float(config_dict['atmosphere']['tau delta'])
                     self.logger.info(' - tau axis will be interpolated to have delta={0}'.format(self.tau_fine))
                 else:
                     self.tau_fine = 0.0
+                
+                if ('mux' in config_dict['atmosphere']):
+                    self.mux = float(config_dict['atmosphere']['mux'])                    
+                else:
+                    self.mux = 1.0
 
+                if ('muy' in config_dict['atmosphere']):
+                    self.muy = float(config_dict['atmosphere']['muy'])
+                else:
+                    self.muy = 1.0
+
+                if (self.mux < 1.0 or self.muy < 1.0):
+                    self.need_slant = True
+
+                    self.xangle = np.arccos(self.mux)
+                    self.yangle = np.arccos(self.muy)
+
+                    self.mu = np.cos(np.sqrt(self.xangle**2 + self.yangle**2))
+        
+                    self.deltaz_new = self.deltaz / np.abs(self.mu)
+                    self.logger.info(f' Slating atmosphere to mux={self.mux} - muy={self.muy}')
+                    self.logger.info(f' Equivalent mu={self.mu}')
+                else:
+                    self.need_slant = False
+                                    
+                if (self.mux < 1.0 or self.muy < 1.0):
+                    self.need_slant = True
+                    if (self.vx_file is None or self.vy_file is None):
+                        raise Exception("For inclined rays you need to provide all velocity components")
 
                 self.zeros = np.zeros(self.ny)                                            
 
@@ -367,7 +407,7 @@ class Model(object):
         fX = interpolate.interp1d(oldtau, var, bounds_error=False, fill_value="extrapolate")
         return fX(newtau)
 
-    def synth(self, T, P, rho, vz, Bx, By, Bz, interpolate_model=False):
+    def synth(self, z, T, P, rho, vz, Bx, By, Bz, interpolate_model=False):
 
         # Get ltau500 axis
         log_T = np.log10(T)
@@ -390,7 +430,7 @@ class Model(object):
         else:
              chi = kappa[::-1]
 
-        tau = integ.cumtrapz(chi,x=self.deltaz)
+        tau = integ.cumtrapz(chi,x=z)
         ltau = np.log10(np.insert(tau, 0, 0.5*tau[0]))[::-1]
 
         ind = np.where(ltau < 2.0)[0]
@@ -446,7 +486,7 @@ class Model(object):
 
         return stokes
 
-    def synth2d(self, T, P, rho, vz, Bx, By, Bz, interpolate_model=False):
+    def synth2d(self, z, T, P, rho, vz, Bx, By, Bz, interpolate_model=False):
 
         n = T.shape[0]
 
@@ -478,7 +518,7 @@ class Model(object):
             else:
                 chi = kappa[::-1]
              
-            tau = integ.cumtrapz(chi, x=self.deltaz)
+            tau = integ.cumtrapz(chi, x=z)
             ltau = np.log10(np.insert(tau, 0, 0.5*tau[0]))[::-1]
 
             ind = np.where(ltau < 2.0)[0]

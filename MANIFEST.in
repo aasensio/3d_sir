@@ -1,3 +1,3 @@
-include hazel/data/LINEAS
+include sir3d/synth/data/*
 include src/sir/PARAMETER
 include VERSION.txt
