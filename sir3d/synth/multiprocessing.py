@@ -44,7 +44,7 @@ class Iterator(object):
         else:
             self.rank = 0            
 
-        self.logger = logging.getLogger("iterator")
+        self.logger = logging.getLogger("Iterator")
         self.logger.setLevel(logging.DEBUG)
         self.logger.handlers = []
 
