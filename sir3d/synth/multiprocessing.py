@@ -126,14 +126,14 @@ class Iterator(object):
             self.n_pixels = self.model.nx * self.model.nz
 
         self.f_stokes_out = h5py.File(self.model.output_file, 'w')
-        self.stokes_db = self.f_stokes_out.create_dataset('stokes', (self.model.nx, self.model.nz, 4, self.model.n_lambda_sir))
+        self.stokes_db = self.f_stokes_out.create_dataset('stokes', (len(x), len(y), 4, self.model.n_lambda_sir))
         self.lambda_db = self.f_stokes_out.create_dataset('lambda', (self.model.n_lambda_sir,))
 
         # If we want to extract a model sampled at selected taus
         interpolate_model = False
         if (self.model.interpolated_model_filename is not None):
             self.f_model_out = h5py.File(self.model.interpolated_model_filename, 'w')
-            self.model_db = self.f_model_out.create_dataset('model', (self.model.nx, self.model.nz, 7, self.model.n_tau))
+            self.model_db = self.f_model_out.create_dataset('model', (len(x), len(y), 7, self.model.n_tau))
             interpolate_model = True
 
         
@@ -360,7 +360,7 @@ class Iterator(object):
                         else:
                             vz = self.vz[ix,:,iz] / self.rho[ix,:,iz]
                         
-                        data_to_send['model'] = [self.deltaz, self.T[ix,:,iz].astype('float64'), self.P[ix,:,iz].astype('float64'), 
+                        data_to_send['model'] = [self.model.deltaz, self.T[ix,:,iz].astype('float64'), self.P[ix,:,iz].astype('float64'), 
                             self.rho[ix,:,iz].astype('float64'), vz.astype('float64'), self.Bx[ix,:,iz].astype('float64'), 
                             self.By[ix,:,iz].astype('float64'), self.Bz[ix,:,iz].astype('float64')]
                     
