@@ -104,6 +104,16 @@ class Iterator(object):
         None
         """
 
+        if (rangex is not None):
+            x = np.arange(rangex[0], rangex[1])
+        else:
+            x = np.arange(self.model.nx)
+
+        if (rangey is not None):
+            y = np.arange(rangey[0], rangey[1])
+        else:
+            y = np.arange(self.model.nz)
+
         if (self.model.atmosphere_type == 'MURAM'):
             self.T = np.memmap(self.model.T_file, dtype='float32', mode='r', shape=self.model.model_shape)
             self.P = np.memmap(self.model.P_file, dtype='float32', mode='r', shape=self.model.model_shape)
@@ -127,8 +137,8 @@ class Iterator(object):
             interpolate_model = True
 
         
-        for ix in trange(self.model.nx, desc='x'):
-            for iz in trange(self.model.nz, desc='x'):
+        for ix in tqdm(x, desc='x'):
+            for iz in tqdm(y, desc='x'):
 
                 if (self.model.vz_type == 'vz'):
                     vz = self.vz[ix,:,iz]
@@ -136,7 +146,7 @@ class Iterator(object):
                     vz = self.vz[ix,:,iz] / self.rho[ix,:,iz]
 
                 if (interpolate_model):
-                    stokes, model = self.model.synth(self.deltaz, self.T[ix,:,iz].astype('float64'), self.P[ix,:,iz].astype('float64'), 
+                    stokes, model = self.model.synth(self.model.deltaz, self.T[ix,:,iz].astype('float64'), self.P[ix,:,iz].astype('float64'), 
                         self.rho[ix,:,iz].astype('float64'), vz.astype('float64'), self.Bx[ix,:,iz].astype('float64'), 
                         self.By[ix,:,iz].astype('float64'), self.Bz[ix,:,iz].astype('float64'), interpolate_model=interpolate_model)
 
@@ -144,7 +154,7 @@ class Iterator(object):
                     self.model_db[ix,iz,:,:] = model
 
                 else:
-                    stokes = self.model.synth(self.deltaz, self.T[ix,:,iz].astype('float64'), self.P[ix,:,iz].astype('float64'), 
+                    stokes = self.model.synth(self.model.deltaz, self.T[ix,:,iz].astype('float64'), self.P[ix,:,iz].astype('float64'), 
                         self.rho[ix,:,iz].astype('float64'), self.vz[ix,:,iz].astype('float64'), self.Bx[ix,:,iz].astype('float64'), 
                         self.By[ix,:,iz].astype('float64'), self.Bz[ix,:,iz].astype('float64'), interpolate_model=interpolate_model)
 
