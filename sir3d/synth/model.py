@@ -147,7 +147,8 @@ class Model(object):
                 self.model_shape = tuple([int(k) for k in config_dict['atmosphere']['dimensions']])
                 self.nx, self.ny, self.nz = self.model_shape
                 self.deltaz = float(config_dict['atmosphere']['deltaz']) * np.arange(self.ny)
-                self.deltaxy = float(config_dict['atmosphere']['deltaxy'])
+                if ('deltaxy' in config_dict['atmosphere']):
+                    self.deltaxy = float(config_dict['atmosphere']['deltaxy'])
                 self.T_file = config_dict['atmosphere']['temperature']
                 self.logger.info(' - T file : {0}'.format(self.T_file))
 
