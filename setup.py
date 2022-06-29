@@ -41,9 +41,9 @@ def _compile(self, obj, src, ext, cc_args, extra_postargs, pp_opts):
         if sys.platform == 'darwin' or sys.platform.startswith('linux'):
             compiler_so = ["gfortran"]
             if (ext == ".f90"):
-                cc_args = ["-O3", "-fPIC", "-c", "-ffree-form", "-ffree-line-length-none"]
+                cc_args = ["-O3", "-fPIC", "-c", "-ffree-form", "-ffree-line-length-none","-fbounds-check"]
             if (ext == ".f"):
-                cc_args = ["-O3", "-fPIC", "-c", "-fno-automatic", "-ffixed-line-length-none"]
+                cc_args = ["-O3", "-fPIC", "-c", "-fno-automatic", "-ffixed-line-length-none","-fbounds-check"]
             # Force architecture of shared library.
             if arch == "32bit":
                 cc_args.append("-m32")
@@ -113,7 +113,6 @@ lib_sir = MyExtension('sir3d.sir_code',
                   sources=list_files,
                   include_dirs=[numpy.get_include()])
 
-
 setup_config = dict(
     name='sir3d',
     version=version,
@@ -125,7 +124,6 @@ setup_config = dict(
     license='GNU General Public License, version 3 (GPLv3)',
     platforms='OS Independent',
     install_requires=['numpy','scipy','configobj','h5py','astropy','tqdm','cython'],
-    # packages=["pyiacsun.atlas"], #, "pyiacsun.linalg", "pyiacsun.plot", "pyiacsun.sparse", "pyiacsun.util"], #.radtran.milne", "pyiacsun.radtran.lte"],
     ext_modules=[lib_sir],
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -147,6 +145,9 @@ setup_config = dict(
     zip_safe=False,
     include_package_data=True,
 )
+
+
+
 
 if __name__ == "__main__":
     setup(**setup_config)
