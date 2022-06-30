@@ -410,6 +410,7 @@ class Model(object):
 
     def synth(self, z, T, P, rho, vz, Bx, By, Bz, interpolate_model=False,withstokes=True):
 
+
         # Get ltau500 axis
         log_T = np.log10(T)
         log_P = np.log10(P)
@@ -419,6 +420,12 @@ class Model(object):
         ip0 = np.searchsorted(self.P_kappa5, log_P) - 1
         ip1 = ip0 + 1
 
+        # When close to the edge of the interval
+        it0 = np.clip(it0, 0, self.T_kappa5.shape[0]-2)
+        it1 = np.clip(it1, 1, self.T_kappa5.shape[0]-1)
+        ip0 = np.clip(ip0, 0, self.P_kappa5.shape[0]-2)
+        ip1 = np.clip(ip1, 1, self.P_kappa5.shape[0]-1)
+
         kappa = self.kappa[it0,ip0] * (self.T_kappa5[it1] - log_T) * (self.P_kappa5[ip1] - log_P) + \
                 self.kappa[it1,ip0] * (log_T - self.T_kappa5[it0]) * (self.P_kappa5[ip1] - log_P) + \
                 self.kappa[it0,ip1] * (self.T_kappa5[it1] - log_T) * (log_P - self.P_kappa5[ip0]) + \
@@ -427,10 +434,12 @@ class Model(object):
         kappa /= ((self.T_kappa5[it1] - self.T_kappa5[it0]) * (self.P_kappa5[ip1] - self.P_kappa5[ip0]))
 
         if (self.eos_type == 'MANCHA'):
-             chi = (kappa * rho)[::-1]
+            chi = (kappa * rho)[::-1]
         else:
-             chi = kappa[::-1]
+            chi = kappa[::-1]
 
+        # Numeric error in higher layers
+        chi[chi<0] = 1e-20
         tau = integ.cumtrapz(chi,x=z)
         ltau = np.log10(np.insert(tau, 0, 0.5*tau[0]))[::-1]
 
@@ -441,6 +450,12 @@ class Model(object):
         it1 = it0 + 1
         ip0 = np.searchsorted(self.P_eos, log_P) - 1
         ip1 = ip0 + 1
+
+        # When close to the edge of the interval
+        it0 = np.clip(it0, 0, self.T_eos.shape[0]-2)
+        it1 = np.clip(it1, 1, self.T_eos.shape[0]-1)
+        ip0 = np.clip(ip0, 0, self.P_eos.shape[0]-2)
+        ip1 = np.clip(ip1, 1, self.P_eos.shape[0]-1)
 
         if (self.eos_type == 'MANCHA'):
             log_Pe = self.Pe_eos[ip0,it0] * (self.T_eos[it1] - log_T) * (self.P_eos[ip1] - log_P) + \
@@ -453,20 +468,22 @@ class Model(object):
                 self.Pe_eos[it0,ip1] * (self.T_eos[it1] - log_T) * (log_P - self.P_eos[ip0]) + \
                 self.Pe_eos[it1,ip1] * (log_T - self.T_eos[it0]) * (log_P - self.P_eos[ip0])
 
-
         log_Pe /= ((self.T_eos[it1] - self.T_eos[it0]) * (self.P_eos[ip1] - self.P_eos[ip0]))
+
+        if len(ltau[ind]) < 1:
+            ind = np.arange(len(ltau)-1)
 
         if (withstokes):
             if (self.tau_fine != 0.0):
-                taufino = np.arange(np.min(ltau[ind]), np.max(ltau[ind]), self.tau_fine)[::-1]
-                stokes, error = sir_code.synth(1, self.n_lambda_sir, taufino, self.intpltau(taufino, ltau[ind], T[ind]),
-                    10**self.intpltau(taufino, ltau[ind], log_Pe[ind]), self.intpltau(taufino, ltau[ind], self.zeros[ind]), 
-                    self.intpltau(taufino, ltau[ind], self.vz_multiplier*vz[ind]), self.intpltau(taufino, ltau[ind], self.bx_multiplier*Bx[ind]),
-                    self.intpltau(taufino, ltau[ind], self.by_multiplier*By[ind]), self.intpltau(taufino, ltau[ind], self.bz_multiplier*Bz[ind]), self.macroturbulence)
+                taufino = np.arange(np.min(ltau), np.max(ltau), self.tau_fine)[::-1]
+                taufino = taufino[(taufino<2.0) & (taufino>-5.0)]
+                stokes, error = sir_code.synth(1, self.n_lambda_sir, taufino, self.intpltau(taufino, ltau, T),
+                    10**self.intpltau(taufino, ltau, log_Pe), self.intpltau(taufino, ltau, np.zeros(len(T))), 
+                    self.intpltau(taufino, ltau, self.vz_multiplier*vz), self.intpltau(taufino, ltau, self.bx_multiplier*Bx),
+                    self.intpltau(taufino, ltau, self.by_multiplier*By), self.intpltau(taufino, ltau, self.bz_multiplier*Bz), self.macroturbulence)
 
             else:
-
-                stokes, error = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[ind], 10**log_Pe[ind], self.zeros[ind], self.vz_multiplier*vz[ind], 
+                stokes, error = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[ind], 10**log_Pe[ind], np.zeros(len(T[ind])), self.vz_multiplier*vz[ind], 
                     self.bx_multiplier*Bx[ind], self.by_multiplier*By[ind], self.bz_multiplier*Bz[ind], self.macroturbulence)        
 
             if (error != 0):
@@ -478,7 +495,7 @@ class Model(object):
         if (interpolate_model):
             model = np.zeros((7,self.n_tau))
 
-            model[0,:] = self.intpltau(self.interpolated_tau, ltau[::-1], self.deltaz[::-1])
+            model[0,:] = self.intpltau(self.interpolated_tau, ltau[::-1], z[::-1])
             model[1,:] = self.intpltau(self.interpolated_tau, ltau[::-1], T[::-1])
             model[2,:] = np.exp(self.intpltau(self.interpolated_tau, ltau[::-1], np.log(P[::-1])))
             model[3,:] = self.intpltau(self.interpolated_tau, ltau[::-1], self.vz_multiplier * vz[::-1])
@@ -486,10 +503,9 @@ class Model(object):
             model[5,:] = self.intpltau(self.interpolated_tau, ltau[::-1], self.by_multiplier * By[::-1])
             model[6,:] = self.intpltau(self.interpolated_tau, ltau[::-1], self.bz_multiplier * Bz[::-1])
 
-            # return stokes, model
         else:
             model = np.zeros((7,len(self.deltaz)))
-            model[0,:] = self.deltaz
+            model[0,:] = z
             model[1,:] = T
             model[2,:] = P
             model[3,:] = vz
@@ -497,7 +513,6 @@ class Model(object):
             model[5,:] = By
             model[6,:] = Bz
 
-        # return stokes
         return stokes, model
 
     def synth2d(self, z, T, P, rho, vz, Bx, By, Bz, interpolate_model=False,withstokes=True):
@@ -523,6 +538,12 @@ class Model(object):
             ip0 = np.searchsorted(self.P_kappa5, log_P) - 1
             ip1 = ip0 + 1
 
+            # When close to the edge of the interval
+            it0 = np.clip(it0, 0, self.T_kappa5.shape[0]-2)
+            it1 = np.clip(it1, 1, self.T_kappa5.shape[0]-1)
+            ip0 = np.clip(ip0, 0, self.P_kappa5.shape[0]-2)
+            ip1 = np.clip(ip1, 1, self.P_kappa5.shape[0]-1)
+
             kappa = self.kappa[it0,ip0] * (self.T_kappa5[it1] - log_T) * (self.P_kappa5[ip1] - log_P) + \
                     self.kappa[it1,ip0] * (log_T - self.T_kappa5[it0]) * (self.P_kappa5[ip1] - log_P) + \
                     self.kappa[it0,ip1] * (self.T_kappa5[it1] - log_T) * (log_P - self.P_kappa5[ip0]) + \
@@ -534,7 +555,9 @@ class Model(object):
                 chi = (kappa * rho[loop,:])[::-1]
             else:
                 chi = kappa[::-1]
-             
+
+            # Numeric error in higher layers
+            chi[chi<0] = 1e-20
             tau = integ.cumtrapz(chi, x=z)
             ltau = np.log10(np.insert(tau, 0, 0.5*tau[0]))[::-1]
 
@@ -545,6 +568,12 @@ class Model(object):
             it1 = it0 + 1
             ip0 = np.searchsorted(self.P_eos, log_P) - 1
             ip1 = ip0 + 1
+
+            # When close to the edge of the interval
+            it0 = np.clip(it0, 0, self.T_eos.shape[0]-2)
+            it1 = np.clip(it1, 1, self.T_eos.shape[0]-1)
+            ip0 = np.clip(ip0, 0, self.P_eos.shape[0]-2)
+            ip1 = np.clip(ip1, 1, self.P_eos.shape[0]-1)
 
             if (self.eos_type == 'MANCHA'):
                 log_Pe = self.Pe_eos[ip0,it0] * (self.T_eos[it1] - log_T) * (self.P_eos[ip1] - log_P) + \
@@ -561,11 +590,13 @@ class Model(object):
 
             if (withstokes):
                 if (self.tau_fine != 0.0):
-                    taufino = np.arange(np.min(ltau[ind]), np.max(ltau[ind]), self.tau_fine)[::-1]
-                    stokes_out[loop,:,:], error = sir_code.synth(1, self.n_lambda_sir, taufino, self.intpltau(taufino, ltau[ind], T[loop,ind]),
-                        10**self.intpltau(taufino, ltau[ind], log_Pe[ind]), self.intpltau(taufino, ltau[ind], self.zeros[ind]), 
-                        self.intpltau(taufino, ltau[ind], self.vz_multiplier*vz[loop,ind]), self.intpltau(taufino, ltau[ind], self.bx_multiplier*Bx[loop,ind]),
-                        self.intpltau(taufino, ltau[ind], self.by_multiplier*By[loop,ind]), self.intpltau(taufino, ltau[ind], self.bz_multiplier*Bz[loop,ind]), self.macroturbulence)
+                    taufino = np.arange(np.min(ltau), np.max(ltau), self.tau_fine)[::-1]
+                    taufino = taufino[(taufino<2.0) & (taufino>-5.0)]
+                    stokes_out[loop,:,:], error = sir_code.synth(1, self.n_lambda_sir, taufino, self.intpltau(taufino, ltau, T[loop,:]),
+                        10**self.intpltau(taufino, ltau, log_Pe[:]), self.intpltau(taufino, ltau[:], np.zeros(len(T[loop,:]))), 
+                        self.intpltau(taufino, ltau, self.vz_multiplier*vz[loop,:]), self.intpltau(taufino, ltau, self.bx_multiplier*Bx[loop,:]),
+                        self.intpltau(taufino, ltau, self.by_multiplier*By[loop,:]), self.intpltau(taufino, ltau, self.bz_multiplier*Bz[loop,:]), self.macroturbulence)
+
                 else:
                     stokes_out[loop,:,:], error = sir_code.synth(1, self.n_lambda_sir, ltau[ind], T[loop,ind], 10**log_Pe[ind], self.zeros[ind], 
                         self.vz_multiplier*vz[loop,ind], self.bx_multiplier*Bx[loop,ind], self.by_multiplier*By[loop,ind], self.bz_multiplier*Bz[loop,ind], self.macroturbulence)
@@ -594,8 +625,4 @@ class Model(object):
                 model_out[loop,6,:] = self.bz_multiplier * Bz[loop,:]
 
 
-        # if (interpolate_model):
-        #     return stokes_out, model_out
-        # else:
-        #     return stokes_out
         return stokes_out, model_out

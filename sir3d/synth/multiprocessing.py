@@ -148,8 +148,7 @@ class Iterator(object):
         # To save the result in a model with the same size of the range
         for cx, ix in enumerate(tqdm(x, desc='x')):
             for cz, iz in enumerate(tqdm(y, desc='y')):
-        # for ix in tqdm(x, desc='x'):
-            # for iz in tqdm(y, desc='x'):
+
                 if (self.model.vz_type == 'vz'):
                     vz = self.vz[ix,:,iz]
                 else:
@@ -512,13 +511,6 @@ class Iterator(object):
 
                 z, T, P, rho, vz, Bx, By, Bz = data_received['model']
 
-                # if (interpolate_model):
-                #     stokes, model = self.model.synth2d(z, T, P, rho, vz, Bx, By, Bz, interpolate_model=interpolate_model)
-                #     data_to_send['model'] = model
-                # else:
-                #     stokes = self.model.synth2d(T, P, rho, vz, Bx, By, Bz, interpolate_model=None)
-                # data_to_send['stokes'] = stokes
-
                 # Generic implementation: always get two outputs (stokes=None when no synthetsis)
                 stokes, model = self.model.synth2d(z, T, P, rho, vz, Bx, By, Bz, interpolate_model=interpolate_model,withstokes=self.withstokes)
                 if (interpolate_model): data_to_send['model'] = model
@@ -532,7 +524,7 @@ class Iterator(object):
 
     def run_all_pixels(self, rangex=None, rangey=None):
         """
-        Run synthesis/inversion for all pixels
+        Run synthesis for all pixels
 
         Parameters
         ----------
