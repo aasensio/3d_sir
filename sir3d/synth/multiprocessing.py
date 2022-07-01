@@ -18,7 +18,7 @@ class tags(IntEnum):
     START = 3
 
 class Iterator(object):
-    def __init__(self, use_mpi=False, batch=1, n_batches=None, workers_slant=None):
+    def __init__(self, use_mpi=False, batch=1, n_batches=None, workers_slant=None, withstokes=True):
         
         # Initializations and preliminaries        
         self.use_mpi = use_mpi
@@ -40,7 +40,9 @@ class Iterator(object):
                     self.workers_slant = workers_slant
 
             if (self.size == 1):
-                raise Exception("You do not have agents available or you need to start the code with mpiexec.")
+                print("You have activated mpi but you do not have agents available or you need to start the code with mpiexec.")
+                # The code can still run in single-core with a message
+                self.use_mpi = False
         else:
             self.rank = 0            
 
@@ -55,6 +57,7 @@ class Iterator(object):
 
         self.batch = batch
         self.stop_after_n_batches = n_batches
+        self.withstokes = withstokes
 
     def get_rank(self, n_agents=0):        
         if (self.use_mpi):
@@ -125,9 +128,15 @@ class Iterator(object):
 
             self.n_pixels = self.model.nx * self.model.nz
 
-        self.f_stokes_out = h5py.File(self.model.output_file, 'w')
-        self.stokes_db = self.f_stokes_out.create_dataset('stokes', (len(x), len(y), 4, self.model.n_lambda_sir))
-        self.lambda_db = self.f_stokes_out.create_dataset('lambda', (self.model.n_lambda_sir,))
+        # Showing to the user that no stokes will by synthetized
+        if not (self.withstokes):
+            self.logger.info("Avoiding the synthesis module and only saving the model.")
+
+        # Write stokes file only if withstokes
+        if (self.withstokes):
+            self.f_stokes_out = h5py.File(self.model.output_file, 'w')
+            self.stokes_db = self.f_stokes_out.create_dataset('stokes', (len(x), len(y), 4, self.model.n_lambda_sir))
+            self.lambda_db = self.f_stokes_out.create_dataset('lambda', (self.model.n_lambda_sir,))
 
         # If we want to extract a model sampled at selected taus
         interpolate_model = False
@@ -136,35 +145,34 @@ class Iterator(object):
             self.model_db = self.f_model_out.create_dataset('model', (len(x), len(y), 7, self.model.n_tau))
             interpolate_model = True
 
-        
-        for ix in tqdm(x, desc='x'):
-            for iz in tqdm(y, desc='x'):
+        # To save the result in a model with the same size of the range
+        for cx, ix in enumerate(tqdm(x, desc='x')):
+            for cz, iz in enumerate(tqdm(y, desc='y')):
 
                 if (self.model.vz_type == 'vz'):
                     vz = self.vz[ix,:,iz]
                 else:
                     vz = self.vz[ix,:,iz] / self.rho[ix,:,iz]
 
-                if (interpolate_model):
-                    stokes, model = self.model.synth(self.model.deltaz, self.T[ix,:,iz].astype('float64'), self.P[ix,:,iz].astype('float64'), 
-                        self.rho[ix,:,iz].astype('float64'), vz.astype('float64'), self.Bx[ix,:,iz].astype('float64'), 
-                        self.By[ix,:,iz].astype('float64'), self.Bz[ix,:,iz].astype('float64'), interpolate_model=interpolate_model)
+                # Generic implementation: always get two outputs (stokes=None when no synthetsis)
+                stokes, model = self.model.synth(self.model.deltaz, self.T[ix,:,iz].astype('float64'), self.P[ix,:,iz].astype('float64'), 
+                    self.rho[ix,:,iz].astype('float64'), vz.astype('float64'), self.Bx[ix,:,iz].astype('float64'), 
+                    self.By[ix,:,iz].astype('float64'), self.Bz[ix,:,iz].astype('float64'), interpolate_model=interpolate_model,withstokes=self.withstokes)
 
-                    self.stokes_db[ix,iz,:,:] = stokes[1:,:]
-                    self.model_db[ix,iz,:,:] = model
+                if (self.withstokes):
+                    self.stokes_db[cx,cz,:,:] = stokes[1:,:]
+                
+                self.model_db[cx,cz,:,:] = model
 
-                else:
-                    stokes = self.model.synth(self.model.deltaz, self.T[ix,:,iz].astype('float64'), self.P[ix,:,iz].astype('float64'), 
-                        self.rho[ix,:,iz].astype('float64'), self.vz[ix,:,iz].astype('float64'), self.Bx[ix,:,iz].astype('float64'), 
-                        self.By[ix,:,iz].astype('float64'), self.Bz[ix,:,iz].astype('float64'), interpolate_model=interpolate_model)
 
-                    self.stokes_db[ix,iz,:,:] = stokes[1:,:]
-
-        self.lambda_db[:] = stokes[0,:]
-
-        self.f_stokes_out.close()
+        if (self.withstokes):
+            self.lambda_db[:] = stokes[0,:]
+            self.f_stokes_out.close()
+        
         self.f_model_out.close()
-                                            
+
+        # To fix print problem of tqdm
+        print()                                 
 
     def mpi_master_work_synth(self, rangex, rangey):
         """
@@ -213,10 +221,16 @@ class Iterator(object):
             
             divX = np.array_split(X, self.n_batches)
             divY = np.array_split(Y, self.n_batches)
-    
-        self.f_stokes_out = h5py.File(self.model.output_file, 'w')
-        self.stokes_db = self.f_stokes_out.create_dataset('stokes', (self.model.nx, self.model.nz, 4, self.model.n_lambda_sir), dtype='float32')
-        self.lambda_db = self.f_stokes_out.create_dataset('lambda', (self.model.n_lambda_sir,), dtype='float32')
+
+        # Showing to the user that no stokes will by synthetized
+        if not (self.withstokes):
+            self.logger.info("Avoiding the synthesis module and only saving the model")
+
+        # Write stokes file only if withstokes
+        if (self.withstokes):
+            self.f_stokes_out = h5py.File(self.model.output_file, 'w')
+            self.stokes_db = self.f_stokes_out.create_dataset('stokes', (self.model.nx, self.model.nz, 4, self.model.n_lambda_sir), dtype='float32')
+            self.lambda_db = self.f_stokes_out.create_dataset('lambda', (self.model.n_lambda_sir,), dtype='float32')
 
         # If we want to extract a model sampled at selected taus
         interpolate_model = False
@@ -339,7 +353,7 @@ class Iterator(object):
         self.last_received = 0
         self.last_sent = 0
 
-        self.logger.info("Starting synthesis with {0} workers and {1} batches".format(num_workers, self.n_batches))
+        self.logger.info("Starting calculations with {0} workers and {1} batches".format(num_workers, self.n_batches))
 
         with tqdm(total=self.n_batches, ncols=140) as pbar:            
             while (closed_workers < num_workers):
@@ -376,7 +390,6 @@ class Iterator(object):
                 
                 elif tag == tags.DONE:
                     index = data_received['index']
-                    stokes = data_received['stokes']
                     indX = data_received['indX']
                     indY = data_received['indY']
 
@@ -385,8 +398,11 @@ class Iterator(object):
                         for i in range(len(indX)):
                             self.model_db[indX[i],indY[i],:,:] = model[i,:,:]
                     
-                    for i in range(len(indX)):
-                        self.stokes_db[indX[i],indY[i],:,:] = stokes[i,1:,:]
+                    if (self.withstokes):
+                        stokes = data_received['stokes']
+                        for i in range(len(indX)):
+                            self.stokes_db[indX[i],indY[i],:,:] = stokes[i,1:,:]
+
                                                     
                     self.last_received = '{0} from {1}'.format(index, source)
                     pbar.set_postfix(sent=self.last_sent, received=self.last_received)
@@ -394,9 +410,14 @@ class Iterator(object):
                 elif tag == tags.EXIT:                    
                     closed_workers += 1
 
-        self.lambda_db[:] = stokes[0,0,:]
-        self.f_stokes_out.close()
+        if (self.withstokes):
+            self.lambda_db[:] = stokes[0,0,:]
+            self.f_stokes_out.close()
+        
         self.f_model_out.close()
+
+
+
 
     def mpi_agents_work_synth(self):
         """
@@ -490,13 +511,10 @@ class Iterator(object):
 
                 z, T, P, rho, vz, Bx, By, Bz = data_received['model']
 
-                if (interpolate_model):
-                    stokes, model = self.model.synth2d(z, T, P, rho, vz, Bx, By, Bz, interpolate_model=interpolate_model)
-                    data_to_send['model'] = model
-                else:
-                    stokes = self.model.synth2d(T, P, rho, vz, Bx, By, Bz, interpolate_model=None)
-
-                data_to_send['stokes'] = stokes
+                # Generic implementation: always get two outputs (stokes=None when no synthetsis)
+                stokes, model = self.model.synth2d(z, T, P, rho, vz, Bx, By, Bz, interpolate_model=interpolate_model,withstokes=self.withstokes)
+                if (interpolate_model): data_to_send['model'] = model
+                if (self.withstokes): data_to_send['stokes'] = stokes
                 
                 self.comm.send(data_to_send, dest=0, tag=tags.DONE)
             elif tag == tags.EXIT:
@@ -506,7 +524,7 @@ class Iterator(object):
 
     def run_all_pixels(self, rangex=None, rangey=None):
         """
-        Run synthesis/inversion for all pixels
+        Run synthesis for all pixels
 
         Parameters
         ----------
